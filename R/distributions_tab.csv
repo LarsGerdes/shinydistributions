@@ -1,0 +1,110 @@
+"Distribution","Density Function","Type","No. of Parameters","Default Location","Default Scale","Default Skewness","Default Kurtosis","Default Binomial Denominators"
+"Beta Binomial","dBB","discrete",2,0.5,1,NA,NA,10
+"Box-Cox Cole and Green","dBCCG","continuous",3,1,0.1,1,NA,NA
+"Box-Cox Cole and Green","dBCCGo","continuous",3,1,0.1,1,NA,NA
+"Box-Cox Power Exponential","dBCPE","continuous",4,5,0.1,1,2,NA
+"Box-Cox Power Exponential","dBCPEo","continuous",3,5,0.1,1,2,NA
+"Box-Cox-t","dBCT","continuous",4,5,0.1,1,2,NA
+"Box-Cox-t","dBCTo","continuous",3,5,0.1,1,2,NA
+"Beta","dBE","continuous",2,0.5,0.2,NA,NA,NA
+"Beta inflated","dBEINF","mixed",4,0.5,0.1,0.1,0.1,NA
+"Beta inflated","dBEINF0","mixed",3,0.5,0.1,0.1,NA,NA
+"Beta inflated","dBEINF1","mixed",3,0.5,0.1,0.1,NA,NA
+"Beta","dBEo","continuous",2,0.5,0.2,NA,NA,NA
+"Beta one inflated","dBEOI","mixed",3,0.5,1,0.1,NA,NA
+"Beta zero inflated","dBEZI","mixed",3,0.5,1,0.1,NA,NA
+"Binomial","dBI","discrete",1,0.5,NA,NA,NA,1
+"Beta negative binomial","dBNB","discrete",3,1,1,1,NA,NA
+"Double binomial","dDBI","continuous",2,0.5,1,NA,NA,2
+"Delaport","dDEL","discrete",3,1,1,0.5,NA,NA
+"Double Poisson","dDPO","discrete",2,1,1,NA,NA,NA
+"Exponential generalized Beta type 2","dEGB2","continuous",4,0,1,1,0.5,NA
+"Exponential Gaussian","dexGAUS","continuous",3,5,1,1,NA,NA
+"Exponential","dEXP","continuous",1,1,NA,NA,NA,NA
+"Gamma","dGA","continuous",2,1,1,NA,NA,NA
+"Generalized Beta type 1","dGB1","continuous",4,0.5,0.4,1,1,NA
+"Generalized Beta type 2","dGB2","continuous",4,1,1,1,0.5,NA
+"Geometric","dGEOM","discrete",1,2,NA,NA,NA,NA
+"Geometric (original)","dGEOMo","discrete",1,0.5,NA,NA,NA,NA
+"Generalized Gamma","dGG","continuous",3,1,0.5,1,NA,NA
+"Generalized Inverse Gaussian","dGIG","continuous",3,1,1,1,NA,NA
+"Generalised Pareto","dGP","continuous",2,1,1,NA,NA,NA
+"Generalised Pareto","dGPO","continuous",2,1,1,NA,NA,NA
+"Generalized t","dGT","continuous",4,0,1,3,1.5,NA
+"Gumbel","dGU","continuous",2,0,1,NA,NA,NA
+"Inverse Gaussian","dIG","continuous",2,1,1,NA,NA,NA
+"Inverse Gamma","dIGAMMA","continuous",2,1,0.5,NA,NA,NA
+"Johnson's SU","dJSU","continuous",4,0,1,1,0.5,NA
+"Johnson's SU","dJSUo","continuous",1,0,1,0,1,NA
+"Logarithmic","dLG","discrete",1,0.5,NA,NA,NA,NA
+"log-Normal (Box-Cox)","dLNO","continuous",3,1,0.1,0,NA,NA
+"Logistic","dLO","continuous",2,0,1,NA,NA,NA
+"Logit Normal","dLOGITNO","continuous",2,0.5,1,NA,NA,NA
+"log-Normal","dLOGNO","continuous",2,0,1,NA,NA,NA
+"log-Normal","dLOGNO2","continuous",2,1,1,NA,NA,NA
+"Normal Linear Quadratic","dLQNO","continuous",2,1,1,NA,NA,NA
+"Multinomial","dMN3","continuous",2,1,1,NA,NA,NA
+"Multinomial","dMN4","continuous",3,1,1,1,NA,NA
+"Multinomial","dMN5","continuous",3,1,1,1,1,NA
+"Negative Binomial family","dNBF","discrete",3,1,1,2,NA,NA
+"Negative Binomial type I","dNBI","discrete",2,1,1,NA,NA,NA
+"Negative Binomial type II","dNBII","discrete",2,1,1,NA,NA,NA
+"Normal Exponential t","dNET","continuous",4,0,1,1.5,2,NA
+"Normal (mu, sd)","dNO","continuous",2,0,1,NA,NA,NA
+"Normal (mu, var)","dNO2","continuous",2,0,1,NA,NA,NA
+"Normal Family","dNOF","continuous",3,0,1,0,NA,NA
+"Pareto type 2","dPARETO2","continuous",2,1,0.5,NA,NA,NA
+"Pareto type 2 original","dPARETO2o","continuous",2,1,0.5,NA,NA,NA
+"Power Exponential","dPE","continuous",3,0,1,2,NA,NA
+"Power Exponential type 2","dPE2","continuous",3,0,1,2,NA,NA
+"Poisson inverse Gaussian","dPIG","discrete",2,1,1,NA,NA,NA
+"Poison","dPO","discrete",1,1,NA,NA,NA,NA
+"Reverse Gumbel","dRG","continuous",2,0,1,NA,NA,NA
+"Reverse generalized extreme","dRGE","continuous",3,1,0.1,1,NA,NA
+"Skew Power Exponential","dSEP","continuous",1,0,1,0,2,NA
+"Skew Power Exponential type 1","dSEP1","continuous",4,0,1,0,2,NA
+"Skew Power Exponential type 2","dSEP2","continuous",4,0,1,0,2,NA
+"Skew Power Exponential type 3","dSEP3","continuous",4,0,1,2,2,NA
+"Skew Power Exponential type 4","dSEP4","continuous",4,0,1,2,2,NA
+"Shash","dSHASH","continuous",4,0,1,0.5,0.5,NA
+"Shash original","dSHASHo","continuous",4,0,1,0,1,NA
+"Shash original 2","dSHASHo2","continuous",4,0,1,0,1,NA
+"Sichel (original)","dSI","discrete",3,0.5,0.02,-0.5,NA,NA
+"Sichel (mu as the maen)","dSICHEL","discrete",3,1,1,-0.5,NA,NA
+"Skew Normal Type 1","dSN1","continuous",1,0,1,0,NA,NA
+"Skew Normal Type 2","dSN2","continuous",2,0,1,2,NA,NA
+"Skew t","dSST","continuous",2,0,1,0.8,7,NA
+"Skew t type 1","dST1","continuous",3,0,1,0,2,NA
+"Skew t type 2","dST2","continuous",3,0,1,0,2,NA
+"Skew t type 3","dST3","continuous",3,0,1,1,10,NA
+"Skew t","dST3C","continuous",2,0,1,1,10,NA
+"Skew t type 4","dST4","continuous",3,0,1,1,10,NA
+"Skew t type 5","dST5","continuous",3,0,1,0,1,NA
+"t-distribution","dTF","continuous",3,0,1,10,NA,NA
+"t-distribution","dTF2","continuous",2,0,1,10,NA,NA
+"Waring","dWARING","discrete",1,2,2,NA,NA,NA
+"Weibull","dWEI","continuous",2,1,1,NA,NA,NA
+"Weibull(PH parameterization)","dWEI2","continuous",2,1,1,NA,NA,NA
+"Weibull (mu as mean)","dWEI3","continuous",2,1,1,NA,NA,NA
+"Yule","dYULE","discrete",1,2,NA,NA,NA,NA
+"Zero adjusted beta binomial","dZABB","discrete",3,0.5,0.1,0.1,NA,1
+"Zero adjusted binomial","dZABI","discrete",2,0.5,0.1,NA,NA,1
+"Zero adjusted beta neg. bin.","dZABNB","discrete",4,1,1,1,0.1,NA
+"Zero adjusted Gamma","dZAGA","mixed",3,1,1,0.1,NA,NA
+"Zero adjusted IG","dZAIG","mixed",2,1,1,0.1,NA,NA
+"Zero adjusted logarithmic","dZALG","discrete",2,0.5,0.1,NA,NA,NA
+"Zero adjusted neg. bin.","dZANBI","discrete",3,1,1,0.3,NA,NA
+"Zero adjusted poisson","dZAP","discrete",2,5,0.1,NA,NA,NA
+"Zero adjusted PIG","dZAPIG","discrete",3,1,1,0.3,NA,NA
+"Zero adjusted Sichel","dZASICHEL","discrete",4,1,1,-0.5,0.1,NA
+"Zero adjusted Zipf","dZAZIPF","discrete",2,0.5,0.1,NA,NA,NA
+"Zero inflated beta binomial","dZIBB","discrete",3,0.5,0.5,0.1,NA,1
+"Zero inflated binomial","dZIBI","discrete",2,0.5,0.1,NA,NA,1
+"Zero inflated beta neg. bin.","dZIBNB","discrete",4,1,1,1,0.1,NA
+"Zero inflated neg. bin. family","dZINBF","discrete",3,1,1,2,0.1,NA
+"Zero inflated neg. bin.","dZINBI","discrete",3,1,1,0.3,NA,NA
+"Zero inflated poisson","dZIP","discrete",2,5,0.1,NA,NA,NA
+"Zero inf. poiss.(mu as mean)","dZIP2","discrete",2,5,0.1,NA,NA,NA
+"Zipf","dZIPF","discrete",1,1,NA,NA,NA,NA
+"Zero inflated PIG","dZIPIG","discrete",3,1,1,0.3,NA,NA
+"Zero inflated Sichel","dZISICHEL","discrete",4,1,1,-0.5,0.1,NA

@@ -1,0 +1,24 @@
+Package: shinydistribution
+Type: Package
+Title: Fit Distributions to Your Data
+Version: 0.0.0.9000
+Author: c(
+    person("Lars", "Gerdes", email = "l.gerdes@stud.uni-goettingen.de", 
+      roll = c("aut", "cre")), 
+    person("Dragan", "Hoehn", email = "d.hoehn@stud.uni-goettingen.de", 
+      roll = c("aut", "cre")))
+Description: A shiny-app which allows you to compare different distributions to
+    your data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    DT (>= 0.4)
+    gamlss.dist (>= 5.0-6)
+    ggplot2 (>= 3.0.0)
+    R.utils (>= 2.6.0)
+    shiny (>= 1.1.0)
+BugReports: https://github.com/LarsGerdes/shinydistributions/issues
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

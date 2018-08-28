@@ -1,174 +1,4 @@
-#### Shiny.Distributions ####
-
-# read csv containing full distribution names and default parameters for 109
-# density functions
-distributions <- read.csv(
-  file = "distributions_default_params_109_bd_discrete_flag.csv",
-  #file = "dist_densitys_default_params_109_bd_discrete_flag.csv",
-  stringsAsFactors = FALSE)
-
-# read csv containing relevant columns for tab "Properties of Distributions"
-distributions_tab <- read.csv("distributions_tab.csv", header = TRUE,
-                              stringsAsFactors = FALSE, check.names=FALSE)
-# replace NA's by "-" for visual purposes
-distributions_tab[which(is.na(distributions_tab), arr.ind = TRUE)] <- "-"
-
-# helper function (convert vector of columns to named list)
-col_list <- function(vec) {
-  tmp <- as.list(vec)
-  names(tmp) <- as.character(unlist(vec))
-  tmp
-}
-
-#### UI ########################################################################
-ui <- fluidPage(
-  titlePanel(
-    title = "Fit Distributions to Your Data",
-    windowTitle = "Shiny.Distributions"
-  ),
-  tabsetPanel(
-    #### Tab: Plot Distribution ####
-    tabPanel(
-      title = "Plot Distribution",
-      # Sidebar layout with input and output definitions
-      sidebarLayout(
-        sidebarPanel = sidebarPanel(
-          # Output: Select variable
-          uiOutput(outputId = "variable"),
-          # Input: Select plot type
-          # selectInput(
-          #   inputId = "plot_type",
-          #   label = "Plot Type",
-          #   choices = list("Histogram", "Empiric Density Curve")
-          #),
-          # Output: Select plot type
-          uiOutput(outputId = "plot_type"),
-          # Output: Bins for Histogram
-          uiOutput(outputId = "num_bins"),
-          # Function type
-          radioButtons(
-            inputId = "fun_type",
-            label = "Function Type",
-            choices = c("all", "continuous", "discrete", "mixed"),
-            selected = "all",
-            inline = TRUE
-          ),
-          # Number of parameters
-          radioButtons(
-            inputId = "parameters",
-            label = "Number of Parameters",
-            choices = c("all", 1, 2, 3, 4),
-            selected = "all",
-            inline = TRUE
-          ),
-          # Input: Select density function
-          selectInput(
-            inputId = "dist",
-            label = "Density Function",
-            choices = distributions$dist_density
-          ),
-          uiOutput(outputId = "num_location"),
-          uiOutput(outputId = "num_scale"),
-          uiOutput(outputId = "num_skewness"),
-          uiOutput(outputId = "num_kurtosis"),
-          uiOutput(outputId = "num_binomial_denominators"),
-          # Horizontal line
-          tags$hr(),
-          uiOutput(outputId = "num_max_y"),
-          uiOutput(outputId = "num_max_x"),
-          uiOutput(outputId = "num_min_x")
-        ),
-        mainPanel = mainPanel(
-          h3(textOutput(outputId = "caption")),
-          uiOutput(outputId = "plot"),
-          br(),
-          br(),
-          h4("Default Parameter(s) of Theoretic Density Function:"),
-          tags$b(textOutput(outputId = "info_text"), style = "font-size:120%"),
-          br(),
-          h4(textOutput(outputId = "head_ml_estimates")),
-          tags$b(textOutput(outputId = "info_text2"),
-                     style = "font-size:120%")
-        )
-      )
-    ),
-    #### Tab: Data upload ####
-    tabPanel(
-      title = "Data Upload",
-      # Sidebar layout with input and output definitions
-      sidebarLayout(
-        sidebarPanel = sidebarPanel(
-          width = 2,
-          # Input: Select a file
-          fileInput(
-            inputId = "dataset",
-            label = "Choose CSV-file",
-            multiple = TRUE,
-            accept = c("text/csv",
-                       "text/comma-separated-values,text/plain", ".csv")
-          ),
-          actionButton('reset', 'Reset Input'),
-          #uiOutput(outputId = "stop_mle"),
-          # Horizontal line
-          tags$hr(),
-          # Input: Checkbox if file has header
-          checkboxInput(
-            inputId = "header",
-            label = "Header",
-            value = TRUE
-          ),
-          # Input: Select separator
-          radioButtons(
-            inputId = "sep",
-            label = "Seperator",
-            choices = c(Comma = ",", Semicolon = ";", Tab = "\t"),
-            selected = ","
-          ),
-          # Input: Select quotes
-          radioButtons(
-            inputId = "quote",
-            label = "Quote",
-            choices = c(None = "", "Double Quote" = '"', "Single Quote" = "'"),
-            selected = '"'
-          ),
-          # Horizontal line
-          tags$hr(),
-          # Input: Select number of rows to display
-          #radioButtons(
-          #  inputId = "display",
-          #  label = "Display",
-          #  choices = c(Head = "head", All = "all"),
-          #  selected = "head"
-          #),
-          #Input: Select data table or summary of data set
-          radioButtons(
-           inputId = "display",
-           label = "Display",
-           choices = c("Data Frame", "Summary"),
-           selected = "Data Frame"
-          ),
-          tags$hr(),
-          # R-Datasets
-          selectInput(
-            inputId = "r_dataset",
-            label = "Choose a R-dataset:",
-            choices = c("None", "iris", "diamonds", "mtcars")
-          )
-        ),
-        mainPanel = mainPanel(
-          DT::dataTableOutput(outputId = "contents"),
-          #tableOutput(outputId = "contents"),
-          verbatimTextOutput(outputId = "summary")
-        )
-      )
-    ),
-    #### Tab: Properties of Distributions ####
-    tabPanel(
-      title = "Properties of Distributions",
-      DT::dataTableOutput(outputId = "distributions_tab")
-    )
-))
-#### Server ####################################################################
+#### Server ####
 server <- function(input, output, session) {
 
   #### Tab: Data upload ####
@@ -196,12 +26,12 @@ server <- function(input, output, session) {
       )
     } else if (values$upload_state == 'uploaded') {
       # Increase maximum upload size from 5 MB to 30 MB
-      old <- options(shiny.maxRequestSize = 5*1024^2)
+      #old <- options(shiny.maxRequestSize = 5*1024^2)
       options(shiny.maxRequestSize = 30*1024^2)
       read.csv(file = input$dataset$datapath, header = input$header,
                sep = input$sep, quote = input$quote)
       # ...and set it back to the initial value
-      on.exit(expr = options(old), add = TRUE)
+      #on.exit(expr = options(old), add = TRUE)
     } else if (values$upload_state == 'reset') {
       switch (EXPR = input$r_dataset,
               "iris" = iris,
@@ -224,28 +54,28 @@ server <- function(input, output, session) {
       return()
     } else {
 
-    if (input$display == "Data Frame") {
+      if (input$display == "Data Frame") {
 
-      page_length <-  if (nrow(datasetInput()) > 100){
-                          c(10, 15, 20, 50, 100, nrow(datasetInput()) )
-                        } else if (nrow(datasetInput()) <= 10) {
-                          nrow(datasetInput())
-                        } else if (nrow(datasetInput()) <= 15) {
-                          c(10, nrow(datasetInput()) )
-                        } else if (nrow(datasetInput()) <= 20) {
-                          c(10, 15, nrow(datasetInput()) )
-                        } else if (nrow(datasetInput()) <= 50) {
-                          c(10, 15, 20, nrow(datasetInput()) )
-                        } else if (nrow(datasetInput()) <= 100) {
-                          c(10, 15, 20, 50, nrow(datasetInput()) )
-                        }
-      DT::datatable(datasetInput(), rownames = FALSE,
-                    options = list(
-                      lengthMenu = page_length,
-                      pageLength = 15
-                    )
-      )
-    }
+        page_length <-  if (nrow(datasetInput()) > 100){
+          c(10, 15, 20, 50, 100, nrow(datasetInput()) )
+        } else if (nrow(datasetInput()) <= 10) {
+          nrow(datasetInput())
+        } else if (nrow(datasetInput()) <= 15) {
+          c(10, nrow(datasetInput()) )
+        } else if (nrow(datasetInput()) <= 20) {
+          c(10, 15, nrow(datasetInput()) )
+        } else if (nrow(datasetInput()) <= 50) {
+          c(10, 15, 20, nrow(datasetInput()) )
+        } else if (nrow(datasetInput()) <= 100) {
+          c(10, 15, 20, 50, nrow(datasetInput()) )
+        }
+        DT::datatable(datasetInput(), rownames = FALSE,
+                      options = list(
+                        lengthMenu = page_length,
+                        pageLength = 15
+                      )
+        )
+      }
     }
   })
   # Summary
@@ -261,11 +91,11 @@ server <- function(input, output, session) {
                   options = list(lengthMenu = c(10, 15, 20, 50, 109),
                                  pageLength = 10
                                  #columnDefs = list(
-                                  # list(className = 'dt-left', targets= '_all')
-                                   #)
-                                 )
+                                 # list(className = 'dt-left', targets= '_all')
+                                 #)
                   )
-     })
+    )
+  })
   #### Tab: Plot Distribution ####
   # Update variable selection based on uploaded data set
   output$variable <- renderUI({
@@ -276,7 +106,7 @@ server <- function(input, output, session) {
         inputId = "variable",
         label = "Variable",
         choices = colnames(datasetInput())
-        )
+      )
     }
   })
   # Update density function based on selected type and parameters
@@ -287,27 +117,27 @@ server <- function(input, output, session) {
     discrete <- distributions[distributions$dist_type == "discrete",
                               "dist_density"]
     mixed <- distributions[distributions$dist_type == "mixed", "dist_density"]
-    eins <- distributions[distributions$no_of_parameters == 1, "dist_density"]
-    zwei <- distributions[distributions$no_of_parameters == 2, "dist_density"]
-    drei <- distributions[distributions$no_of_parameters == 3, "dist_density"]
-    vier <- distributions[distributions$no_of_parameters == 4, "dist_density"]
+    one <- distributions[distributions$no_of_parameters == 1, "dist_density"]
+    two <- distributions[distributions$no_of_parameters == 2, "dist_density"]
+    three <- distributions[distributions$no_of_parameters == 3, "dist_density"]
+    four <- distributions[distributions$no_of_parameters == 4, "dist_density"]
     choices <- distributions$dist_density
     if (input$fun_type == "mixed") {
       choices.type <- mixed
       if (input$parameters == 4) {
-        choices.parameters <- vier
+        choices.parameters <- four
         selected <- "Beta inflated - dBEINF"
       }
       if (input$parameters == 3) {
-        choices.parameters <- drei
+        choices.parameters <- three
         selected <- "Beta inflated - dBEINF0"
       }
       if (input$parameters == 2) {
-        choices.parameters <- zwei
+        choices.parameters <- two
         selected <- "Zero adjusted IG - dZAIG"
       }
       if (input$parameters == 1) {
-        choices.parameters <- eins
+        choices.parameters <- one
         selected <- NULL
       }
       if (input$parameters == "all") {
@@ -318,19 +148,19 @@ server <- function(input, output, session) {
     if (input$fun_type == "discrete") {
       choices.type <- discrete
       if (input$parameters == 4) {
-        choices.parameters <- vier
+        choices.parameters <- four
         selected <- "Zero adjusted Sichel - dZASICHEL"
       }
       if (input$parameters == 3) {
-        choices.parameters <- drei
+        choices.parameters <- three
         selected <- "Negative Binomial family - dNBF"
       }
       if (input$parameters == 2) {
-        choices.parameters <- zwei
+        choices.parameters <- two
         selected <- "Double Poisson - dDPO"
       }
       if (input$parameters == 1) {
-        choices.parameters <- eins
+        choices.parameters <- one
         selected <- "Poison - dPO"
       }
       if (input$parameters == "all") {
@@ -341,19 +171,19 @@ server <- function(input, output, session) {
     if (input$fun_type == "continuous") {
       choices.type <- continuous
       if (input$parameters == 4) {
-        choices.parameters <- vier
+        choices.parameters <- four
         selected <- "Box-Cox Power Exponential - dBCPE"
       }
       if (input$parameters == 3) {
-        choices.parameters <- drei
+        choices.parameters <- three
         selected <- "t-distribution - dTF"
       }
       if (input$parameters == 2) {
-        choices.parameters <- zwei
+        choices.parameters <- two
         selected <- "Normal (mu, var) - dNO2"
       }
       if (input$parameters == 1) {
-        choices.parameters <- eins
+        choices.parameters <- one
         selected <- "Exponential - dEXP"
       }
       if (input$parameters == "all") {
@@ -364,19 +194,19 @@ server <- function(input, output, session) {
     if (input$fun_type == "all") {
       choices.type <- all
       if (input$parameters == 4) {
-        choices.parameters <- vier
+        choices.parameters <- four
         selected <- "Box-Cox Power Exponential - dBCPE"
       }
       if (input$parameters == 3) {
-        choices.parameters <- drei
+        choices.parameters <- three
         selected <- "t-distribution - dTF"
       }
       if (input$parameters == 2) {
-        choices.parameters <- zwei
+        choices.parameters <- two
         selected <- "Normal (mu, var) - dNO2"
       }
       if (input$parameters == 1) {
-        choices.parameters <- eins
+        choices.parameters <- one
         selected <- "Exponential - dEXP"
       }
       if (input$parameters == "all") {
@@ -516,7 +346,7 @@ server <- function(input, output, session) {
 
       # default: "Normal (mu, var) - dNO2"
       function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
-      )
+    )
   })
   # gamlss-functions with access of variables
   d_funct2 <- reactive({
@@ -639,71 +469,71 @@ server <- function(input, output, session) {
     # without data
     if ( is.null(datasetInput()) ) {
       return()
-    # with data
+      # with data
     } else {
-    # Access value of chosen variable from dataset
-    plot.obj <<- list()
-    plot.obj$data <<- datasetInput()
-    plot.obj$variable <<- with(data = plot.obj$data, expr = get(input$variable))
-
-    default.parameter <- c(
-      distributions[distributions$dist_density == input$dist,
-                    "default_location"],
-      distributions[distributions$dist_density == input$dist,
-                    "default_scale"],
-      distributions[distributions$dist_density == input$dist,
-                    "default_skewness"],
-      distributions[distributions$dist_density == input$dist,
-                    "default_kurtosis"]
-    )
-    default.parameter[is.na(default.parameter)] <- 0
-    binomial_denominator <- distributions[
-      distributions$dist_density == input$dist, "default_binomial_denominators"]
-    log.likelihood <- function(parameter, data) {
-      -sum(R.utils::doCall(
-        d_funct2(),
-        x = data,
-        log = TRUE,
-        bd = ifelse(test = input$max_x <= binomial_denominator,
-                    yes = binomial_denominator, no = input$max_x),
-        mu = parameter[1],
-        sigma = parameter[2],
-        nu = parameter[3],
-        tau = parameter[4])
+      # Access value of chosen variable from dataset
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data,
+                                 expr = get(input$variable))
+      default.parameter <- c(
+        distributions[distributions$dist_density == input$dist,
+                      "default_location"],
+        distributions[distributions$dist_density == input$dist,
+                      "default_scale"],
+        distributions[distributions$dist_density == input$dist,
+                      "default_skewness"],
+        distributions[distributions$dist_density == input$dist,
+                      "default_kurtosis"]
       )
-    }
-    if ((distributions[distributions$dist_density == input$dist,
-                       "discrete_flag"] == 0) &&
-       (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
+      default.parameter[is.na(default.parameter)] <- 0
+      binomial_denominator <- distributions[
+        distributions$dist_density == input$dist, "default_binomial_denominators"]
+      log.likelihood <- function(parameter, data) {
+        -sum(R.utils::doCall(
+          d_funct2(),
+          x = data,
+          log = TRUE,
+          bd = ifelse(test = input$max_x <= binomial_denominator,
+                      yes = binomial_denominator, no = input$max_x),
+          mu = parameter[1],
+          sigma = parameter[2],
+          nu = parameter[3],
+          tau = parameter[4])
+        )
+      }
+      if ((distributions[distributions$dist_density == input$dist,
+                         "discrete_flag"] == 0) &&
+          (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
 
-      showNotification(
-        ui = "Input variable is considered as discrete while using a continuous
-        function.",
-        type = "warning"
-      )
-      mle <- optim(par = default.parameter, fn = log.likelihood,
-                   data = plot.obj$variable,
-                   lower = c(0.000001, 0.000001, 0.000001, 0.000001),
-                   method = "L-BFGS-B")
-      mle <- mle$par
-    } else if (
-      (distributions[distributions$dist_density == input$dist,
-                     "discrete_flag"] == 1) &&
-      (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
+        showNotification(
+          ui = "Input variable is considered as discrete while using a continuous
+          function.",
+          type = "warning"
+        )
+        mle <- optim(par = default.parameter, fn = log.likelihood,
+                     data = plot.obj$variable,
+                     lower = c(0.000001, 0.000001, 0.000001, 0.000001),
+                     method = "L-BFGS-B")
+        mle <- mle$par
+      } else if (
+        (distributions[distributions$dist_density == input$dist,
+                       "discrete_flag"] == 1) &&
+        (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
 
-      showNotification(
-        ui = "You are using continuous data with a discrete function.",
-        type = "error"
-      )
-      mle <- return()
-      #mle <- default.parameter
-    } else {
-      mle <- optim(par = default.parameter, fn = log.likelihood,
-                   data = plot.obj$variable,
-                   lower = c(0.000001, 0.000001, 0.000001, 0.000001),
-                   method = "L-BFGS-B")
-      mle <- mle$par
-    }
+        showNotification(
+          ui = "You are using continuous data with a discrete function.",
+          type = "error"
+        )
+        mle <- return()
+        #mle <- default.parameter
+      } else {
+        mle <- optim(par = default.parameter, fn = log.likelihood,
+                     data = plot.obj$variable,
+                     lower = c(0.000001, 0.000001, 0.000001, 0.000001),
+                     method = "L-BFGS-B")
+        mle <- mle$par
+      }
     }
   })
   # Update parameters (location, scale, skewness, kurtosis, binomial
@@ -724,22 +554,22 @@ server <- function(input, output, session) {
                               "default_location"]
       )
       # with data
-      } else {
-        plot.obj <<- list()
-        plot.obj$data <<- datasetInput()
-        plot.obj$variable <<- with(data = plot.obj$data,
-                                   expr = get(input$variable))
-        numericInput(
-          inputId = "location",
-          label = "Location",
-          value = if (is.null(mle()[1])) {
-                    distributions[distributions$dist_density == input$dist,
-                                  "default_location"]
-                    } else {
-                      round(mle()[1], digits = 2)
-                    }
-        )
+    } else {
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data,
+                                 expr = get(input$variable))
+      numericInput(
+        inputId = "location",
+        label = "Location",
+        value = if (is.null(mle()[1])) {
+          distributions[distributions$dist_density == input$dist,
+                        "default_location"]
+        } else {
+          round(mle()[1], digits = 2)
         }
+      )
+    }
   })
   # Scale
   output$num_scale <- renderUI({
@@ -754,25 +584,25 @@ server <- function(input, output, session) {
     }
     # without data
     if ( is.null(datasetInput()) ) {
-    numericInput(
-      inputId = "scale",
-      label = "Scale",
-      value = distributions[distributions$dist_density == input$dist,
-                            "default_scale"],
-      step = 0.1
+      numericInput(
+        inputId = "scale",
+        label = "Scale",
+        value = distributions[distributions$dist_density == input$dist,
+                              "default_scale"],
+        step = 0.1
       )
-    # with data
+      # with data
     } else {
-        plot.obj <<- list()
-        plot.obj$data <<- datasetInput()
-        plot.obj$variable <<- with(data = plot.obj$data,
-                                   expr = get(input$variable))
-        numericInput(
-          inputId = "scale",
-          label = "Scale",
-          value = round(mle()[2], digits = 2),
-          step = 0.1
-    )
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data,
+                                 expr = get(input$variable))
+      numericInput(
+        inputId = "scale",
+        label = "Scale",
+        value = round(mle()[2], digits = 2),
+        step = 0.1
+      )
     }
   })
   # Skewness
@@ -789,24 +619,24 @@ server <- function(input, output, session) {
     # without data
     if ( is.null(datasetInput()) ) {
       numericInput(
-      inputId = "skewness",
-      label = "Skewness",
-      value = distributions[distributions$dist_density == input$dist,
-                            "default_skewness"]
+        inputId = "skewness",
+        label = "Skewness",
+        value = distributions[distributions$dist_density == input$dist,
+                              "default_skewness"]
       )
       # with data
-      } else {
-        plot.obj <<- list()
-        plot.obj$data <<- datasetInput()
-        plot.obj$variable <<- with(data = plot.obj$data,
-                                   expr = get(input$variable))
+    } else {
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data,
+                                 expr = get(input$variable))
 
-        numericInput(
-          inputId = "skewness",
-          label = "Skewness",
-          value = round(mle()[3], digits = 2)
-        )
-        }
+      numericInput(
+        inputId = "skewness",
+        label = "Skewness",
+        value = round(mle()[3], digits = 2)
+      )
+    }
   })
   # Kurtosis
   output$num_kurtosis <- renderUI({
@@ -826,19 +656,19 @@ server <- function(input, output, session) {
         label = "Kurtosis",
         value = distributions[distributions$dist_density == input$dist,
                               "default_kurtosis"]
-        )
+      )
       # with data
-      } else {
-        plot.obj <<- list()
-        plot.obj$data <<- datasetInput()
-        plot.obj$variable <<- with(data = plot.obj$data, expr = get(input$variable))
+    } else {
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data, expr = get(input$variable))
 
-        numericInput(
+      numericInput(
         inputId = "kurtosis",
         label = "Kurtosis",
         value = round(mle()[4], digits = 2)
-        )
-        }
+      )
+    }
   })
   # Binomial denominators
   output$num_binomial_denominators <- renderUI({
@@ -874,7 +704,7 @@ server <- function(input, output, session) {
         label = "Plot Type",
         choices = list("Histogram", "Empiric Density Curve")
       )
-      }
+    }
   })
 
   # Number of Bins
@@ -916,10 +746,10 @@ server <- function(input, output, session) {
         inputId = "max_y",
         label = "Maximum of Y-axis",
         step = 0.1,
-        value = if (max.density + max.density*0.2 >= 0.1) {
-          round(x = max.density + max.density*0.2, digits = 2)
+        value = if (max.density + max.density*0.3 >= 0.1) {
+          round(x = max.density + max.density*0.3, digits = 2)
         } else {
-          max.density + max.density*0.2
+          max.density + max.density*0.3
         }
       )
     }
@@ -933,7 +763,7 @@ server <- function(input, output, session) {
         label = "Maximum of X-axis",
         value = 5
       )
-    # with data
+      # with data
     } else {
       plot.obj <<- list()
       plot.obj$data <<- datasetInput()
@@ -955,17 +785,17 @@ server <- function(input, output, session) {
         label = "Minimum of X-axis",
         value = -5
       )
-    # with data
+      # with data
     } else {
-    plot.obj <<- list()
-    plot.obj$data <<- datasetInput()
-    plot.obj$variable <<- with(data = plot.obj$data, expr = get(input$variable))
+      plot.obj <<- list()
+      plot.obj$data <<- datasetInput()
+      plot.obj$variable <<- with(data = plot.obj$data, expr = get(input$variable))
 
-    numericInput(
-      inputId = "min_x",
-      label = "Minimum of X-axis",
-      value = round(min(plot.obj$variable), digits = 2)
-    )
+      numericInput(
+        inputId = "min_x",
+        label = "Minimum of X-axis",
+        value = round(min(plot.obj$variable), digits = 2)
+      )
     }
   })
   # Generate plot of the data
@@ -996,7 +826,7 @@ server <- function(input, output, session) {
 
       # Adjust fonts of plot title, axes
       plot.title = ggplot2::element_text(size = 25, hjust = 0.5,
-                                         face = "bold", colour = "#009E73",
+                                         face = "bold", colour = "maroon",
                                          vjust = 0.5),
       axis.text = ggplot2::element_text(colour = "black", size = 13),
       axis.title = ggplot2::element_text(size = 16, face = "bold"),
@@ -1005,22 +835,22 @@ server <- function(input, output, session) {
     # Add theoretical density curve for discrete /
     # continuous or mixed distributions
 
-                      # discrete_flag != 1:
-                      # continuous or mixed (0, 2 respectively)
+    # discrete_flag != 1:
+    # continuous or mixed (0, 2 respectively)
     density.curve <- if (distributions[distributions$dist_density == dist,
                                        "discrete_flag"] != 1) {
-                        ggplot2::stat_function(
-                          mapping = ggplot2::aes(x = x.limits, size = "0.1"),
-                          fun = d_funct(), colour = "#009E73",
-                          show.legend = FALSE)
-                      # discrete_flag == 1: discrete
-                      } else {
-                        ggplot2::stat_function(
-                          mapping = ggplot2::aes(x = x.limits, size = "0.1"),
-                          fun = d_funct(),
-                          n = (input$max_x - input$min_x + 1),
-                          colour = "#009E73", show.legend = FALSE)
-                      }
+      ggplot2::stat_function(
+        mapping = ggplot2::aes(x = x.limits, size = "0.1"),
+        fun = d_funct(), colour = "maroon",
+        show.legend = FALSE)
+      # discrete_flag == 1: discrete
+    } else {
+      ggplot2::stat_function(
+        mapping = ggplot2::aes(x = x.limits, size = "0.1"),
+        fun = d_funct(),
+        n = (input$max_x - input$min_x + 1),
+        colour = "maroon", show.legend = FALSE)
+    }
 
     ################
     # without data #
@@ -1039,9 +869,9 @@ server <- function(input, output, session) {
         # Add Theoretical Density Curve
         density.curve
 
-    #############
-    # with data #
-    #############
+      #############
+      # with data #
+      #############
     } else if (! is.null(datasetInput()) ) {
 
       # Access value of chosen variable from dataset
@@ -1091,12 +921,12 @@ server <- function(input, output, session) {
     # without data
     if ( is.null(datasetInput()) ) {
       "Theoretic Density Curve"
-    # with data
-      } else {
-        switch(EXPR = input$plot_type,
-               "Histogram" = "Histogram of Data and Theoretic Density Curve",
-               "Empiric Density Curve" = "Empiric and Theoretic Densities")
-        }
+      # with data
+    } else {
+      switch(EXPR = input$plot_type,
+             "Histogram" = "Histogram of Data and Theoretic Density Curve",
+             "Empiric Density Curve" = "Empiric and Theoretic Densities")
+    }
   })
   # Info text on main panel below plot
 
@@ -1155,23 +985,20 @@ server <- function(input, output, session) {
       dist <- input$dist
 
       paste(
-      "Location = ", round(mle()[1], digits = 2),
+        "Location = ", round(mle()[1], digits = 2),
 
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_scale"]), '',
-        paste("; Scale = ", round(mle()[2], digits = 2), sep = '')),
+        ifelse(is.na(distributions[
+          distributions$dist_density == dist, "default_scale"]), '',
+          paste("; Scale = ", round(mle()[2], digits = 2), sep = '')),
 
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_skewness"]), '',
-        paste("; Skewness = ", round(mle()[3], digits = 2), sep = '')),
+        ifelse(is.na(distributions[
+          distributions$dist_density == dist, "default_skewness"]), '',
+          paste("; Skewness = ", round(mle()[3], digits = 2), sep = '')),
 
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_kurtosis"]), '',
-        paste("; Kurtosis = ", round(mle()[4], digits = 2), sep = '')),
-      sep = '')
+        ifelse(is.na(distributions[
+          distributions$dist_density == dist, "default_kurtosis"]), '',
+          paste("; Kurtosis = ", round(mle()[4], digits = 2), sep = '')),
+        sep = '')
     }
   })
 }
-
-#### Execution ####
-shiny::shinyApp(ui = ui, server = server)

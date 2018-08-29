@@ -13,3 +13,5 @@
 # save as sysdata.rda
 #devtools::use_data(distributions, distributions_tab, internal = TRUE,
 #                   overwrite = TRUE)
+devtools::install_github("LarsGerdes/shinydistributions")
+shinydistributions::launch()

@@ -8,5 +8,5 @@
 
 # run the app
 launch <- function() {
-  shiny::shinyApp(ui = ui, server = server)
+  shiny::shinyApp(system.file("launch", package = "shinydistributions"))
 }

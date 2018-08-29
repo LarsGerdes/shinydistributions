@@ -1,12 +1,11 @@
-Package: shinydistribution
+Package: shinydistributions
 Type: Package
 Title: Fit Distributions to Your Data
 Version: 0.0.0.9000
-Author: c(
-    person("Lars", "Gerdes", email = "l.gerdes@stud.uni-goettingen.de", 
-      roll = c("aut", "cre")), 
-    person("Dragan", "Hoehn", email = "d.hoehn@stud.uni-goettingen.de", 
-      roll = c("aut", "cre")))
+Author: c(person("Lars", "Gerdes", email = "l.gerdes@stud.uni-goettingen.de", 
+            roll = c("aut", "cre")), 
+          person("Dragan", "Hoehn", email = "d.hoehn@stud.uni-goettingen.de", 
+            roll = c("aut", "cre")))
 Description: A shiny-app which allows you to compare different distributions to
     your data.
 License: GPL-3
@@ -22,3 +21,4 @@ BugReports: https://github.com/LarsGerdes/shinydistributions/issues
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 6.1.0

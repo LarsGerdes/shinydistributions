@@ -1,4 +1,12 @@
-#### Server ####
+#' Server function for the shiny app.
+#'
+#' @param input from the ui object
+#' @param output for the ui object
+#' @param session for observe object
+#'
+#'
+
+# server function for shiny app
 server <- function(input, output, session) {
 
   #### Tab: Data upload ####
@@ -87,6 +95,7 @@ server <- function(input, output, session) {
 
   #### Tab: Properties of Distributions ####
   output$distributions_tab <- DT::renderDataTable({
+    distributions_tab <- shinydistributions:::distributions_tab
     DT::datatable(distributions_tab, rownames = FALSE,
                   options = list(lengthMenu = c(10, 15, 20, 50, 109),
                                  pageLength = 10
@@ -111,6 +120,7 @@ server <- function(input, output, session) {
   })
   # Update density function based on selected type and parameters
   observe({
+    distributions <- shinydistributions:::distributions
     all <- distributions$dist_density
     continuous <- distributions[distributions$dist_type == "continuous",
                                 "dist_density"]
@@ -466,6 +476,7 @@ server <- function(input, output, session) {
   })
   # maximum-likelihood-estimates for standard values
   mle <- reactive({
+    distributions <- shinydistributions:::distributions
     # without data
     if ( is.null(datasetInput()) ) {
       return()
@@ -541,6 +552,7 @@ server <- function(input, output, session) {
 
   # Location
   output$num_location <- renderUI({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "There is no mixed density function with one parameter.")
@@ -573,6 +585,7 @@ server <- function(input, output, session) {
   })
   # Scale
   output$num_scale <- renderUI({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -607,6 +620,7 @@ server <- function(input, output, session) {
   })
   # Skewness
   output$num_skewness <- renderUI({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -640,6 +654,7 @@ server <- function(input, output, session) {
   })
   # Kurtosis
   output$num_kurtosis <- renderUI({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -672,6 +687,7 @@ server <- function(input, output, session) {
   })
   # Binomial denominators
   output$num_binomial_denominators <- renderUI({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -804,6 +820,7 @@ server <- function(input, output, session) {
   })
 
   output$p <- renderPlot({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -932,6 +949,7 @@ server <- function(input, output, session) {
 
   # Default Parameter(s) of Theoretic Density Function
   output$info_text <- renderText({
+    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -977,6 +995,7 @@ server <- function(input, output, session) {
   })
   # Maximum Likelihood Estimates of Parameters
   output$info_text2 <- renderText({
+    distributions <- shinydistributions:::distributions
     if ( is.null(datasetInput()) ) {
       return()
     } else if ( is.null(mle()) ) {

@@ -1,4 +1,7 @@
-#### UI ####
+#' UI object for shiny app.
+#'
+
+# ui object for shiny app
 ui <- shiny::fluidPage(
   shiny::titlePanel(
     title = "Fit Distributions to Your Data",
@@ -43,7 +46,7 @@ ui <- shiny::fluidPage(
           shiny::selectInput(
             inputId = "dist",
             label = "Density Function",
-            choices = distributions$dist_density
+            choices = shinydistributions:::distributions$dist_density
           ),
           shiny::uiOutput(outputId = "num_location"),
           shiny::uiOutput(outputId = "num_scale"),

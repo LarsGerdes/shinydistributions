@@ -95,8 +95,7 @@ server <- function(input, output, session) {
 
   #### Tab: Properties of Distributions ####
   output$distributions_tab <- DT::renderDataTable({
-    distributions_tab <- shinydistributions:::distributions_tab
-    DT::datatable(distributions_tab, rownames = FALSE,
+    DT::datatable(shinydistributions:::distributions_tab, rownames = FALSE,
                   options = list(lengthMenu = c(10, 15, 20, 50, 109),
                                  pageLength = 10
                                  #columnDefs = list(
@@ -120,18 +119,17 @@ server <- function(input, output, session) {
   })
   # Update density function based on selected type and parameters
   observe({
-    distributions <- shinydistributions:::distributions
-    all <- distributions$dist_density
-    continuous <- distributions[distributions$dist_type == "continuous",
+    all <- shinydistributions:::distributions$dist_density
+    continuous <- shinydistributions:::distributions[shinydistributions:::distributions$dist_type == "continuous",
                                 "dist_density"]
-    discrete <- distributions[distributions$dist_type == "discrete",
+    discrete <- shinydistributions:::distributions[shinydistributions:::distributions$dist_type == "discrete",
                               "dist_density"]
-    mixed <- distributions[distributions$dist_type == "mixed", "dist_density"]
-    one <- distributions[distributions$no_of_parameters == 1, "dist_density"]
-    two <- distributions[distributions$no_of_parameters == 2, "dist_density"]
-    three <- distributions[distributions$no_of_parameters == 3, "dist_density"]
-    four <- distributions[distributions$no_of_parameters == 4, "dist_density"]
-    choices <- distributions$dist_density
+    mixed <- shinydistributions:::distributions[shinydistributions:::distributions$dist_type == "mixed", "dist_density"]
+    one <- shinydistributions:::distributions[shinydistributions:::distributions$no_of_parameters == 1, "dist_density"]
+    two <- shinydistributions:::distributions[shinydistributions:::distributions$no_of_parameters == 2, "dist_density"]
+    three <- shinydistributions:::distributions[shinydistributions:::distributions$no_of_parameters == 3, "dist_density"]
+    four <- shinydistributions:::distributions[shinydistributions:::distributions$no_of_parameters == 4, "dist_density"]
+    choices <- shinydistributions:::distributions$dist_density
     if (input$fun_type == "mixed") {
       choices.type <- mixed
       if (input$parameters == 4) {
@@ -476,9 +474,8 @@ server <- function(input, output, session) {
   })
   # maximum-likelihood-estimates for standard values
   mle <- reactive({
-    distributions <- shinydistributions:::distributions
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       return()
       # with data
     } else {
@@ -488,18 +485,18 @@ server <- function(input, output, session) {
       plot.obj$variable <<- with(data = plot.obj$data,
                                  expr = get(input$variable))
       default.parameter <- c(
-        distributions[distributions$dist_density == input$dist,
+        shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                       "default_location"],
-        distributions[distributions$dist_density == input$dist,
+        shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                       "default_scale"],
-        distributions[distributions$dist_density == input$dist,
+        shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                       "default_skewness"],
-        distributions[distributions$dist_density == input$dist,
+        shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                       "default_kurtosis"]
       )
       default.parameter[is.na(default.parameter)] <- 0
-      binomial_denominator <- distributions[
-        distributions$dist_density == input$dist, "default_binomial_denominators"]
+      binomial_denominator <- shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == input$dist, "default_binomial_denominators"]
       log.likelihood <- function(parameter, data) {
         -sum(R.utils::doCall(
           d_funct2(),
@@ -513,7 +510,7 @@ server <- function(input, output, session) {
           tau = parameter[4])
         )
       }
-      if ((distributions[distributions$dist_density == input$dist,
+      if ((shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                          "discrete_flag"] == 0) &&
           (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
 
@@ -528,7 +525,7 @@ server <- function(input, output, session) {
                      method = "L-BFGS-B")
         mle <- mle$par
       } else if (
-        (distributions[distributions$dist_density == input$dist,
+        (shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                        "discrete_flag"] == 1) &&
         (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
 
@@ -552,7 +549,6 @@ server <- function(input, output, session) {
 
   # Location
   output$num_location <- renderUI({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "There is no mixed density function with one parameter.")
@@ -562,7 +558,7 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "location",
         label = "Location",
-        value = distributions[distributions$dist_density == input$dist,
+        value = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                               "default_location"]
       )
       # with data
@@ -575,7 +571,7 @@ server <- function(input, output, session) {
         inputId = "location",
         label = "Location",
         value = if (is.null(mle()[1])) {
-          distributions[distributions$dist_density == input$dist,
+          shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                         "default_location"]
         } else {
           round(mle()[1], digits = 2)
@@ -585,13 +581,12 @@ server <- function(input, output, session) {
   })
   # Scale
   output$num_scale <- renderUI({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
     )
     # Hide if scale is not a parameter of the density function
-    if (is.na(distributions[distributions$dist_density == input$dist,
+    if (is.na(shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                             "default_scale"])) {
       return()
     }
@@ -600,7 +595,7 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "scale",
         label = "Scale",
-        value = distributions[distributions$dist_density == input$dist,
+        value = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                               "default_scale"],
         step = 0.1
       )
@@ -620,22 +615,21 @@ server <- function(input, output, session) {
   })
   # Skewness
   output$num_skewness <- renderUI({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
     )
     # Hide if skewness is not a parameter of the density function
-    if (is.na(distributions[distributions$dist_density == input$dist,
+    if (is.na(shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                             "default_skewness"])) {
       return()
     }
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       numericInput(
         inputId = "skewness",
         label = "Skewness",
-        value = distributions[distributions$dist_density == input$dist,
+        value = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                               "default_skewness"]
       )
       # with data
@@ -654,22 +648,21 @@ server <- function(input, output, session) {
   })
   # Kurtosis
   output$num_kurtosis <- renderUI({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
     )
     # Hide if kurtosis is not a parameter of the density function
-    if (is.na(distributions[distributions$dist_density == input$dist,
+    if (is.na(shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                             "default_kurtosis"])) {
       return()
     }
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       numericInput(
         inputId = "kurtosis",
         label = "Kurtosis",
-        value = distributions[distributions$dist_density == input$dist,
+        value = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                               "default_kurtosis"]
       )
       # with data
@@ -687,18 +680,17 @@ server <- function(input, output, session) {
   })
   # Binomial denominators
   output$num_binomial_denominators <- renderUI({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
     )
     # Hide if binomial denominators is not a parameter of the density function
-    if (is.na(distributions[distributions$dist_density == input$dist,
+    if (is.na(shinydistributions:::distributions[shinydistributions:::distributions$dist_density == input$dist,
                             "default_binomial_denominators"])) {
       return()
     }
-    binomial_denominator <- distributions[
-      distributions$dist_density == input$dist, "default_binomial_denominators"]
+    binomial_denominator <- shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist, "default_binomial_denominators"]
     numericInput(
       inputId = "binomial_denominators",
       label = "Binomial denominators",
@@ -742,7 +734,7 @@ server <- function(input, output, session) {
   # Maximum y-axis
   output$num_max_y <- renderUI({
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       numericInput(
         inputId = "max_y",
         label = "Maximum of Y-axis",
@@ -820,7 +812,6 @@ server <- function(input, output, session) {
   })
 
   output$p <- renderPlot({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -854,7 +845,7 @@ server <- function(input, output, session) {
 
     # discrete_flag != 1:
     # continuous or mixed (0, 2 respectively)
-    density.curve <- if (distributions[distributions$dist_density == dist,
+    density.curve <- if (shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                                        "discrete_flag"] != 1) {
       ggplot2::stat_function(
         mapping = ggplot2::aes(x = x.limits, size = "0.1"),
@@ -872,14 +863,14 @@ server <- function(input, output, session) {
     ################
     # without data #
     ################
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
 
       # ggplot
       ggplot2::ggplot() +
 
         # Label axes
         ggplot2::labs(x = NULL, y = "Probability Density",
-                      title = distributions[distributions$dist_density == dist,
+                      title = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                                             "distribution"]) +
         axes.limits +
         .theme +
@@ -889,7 +880,7 @@ server <- function(input, output, session) {
       #############
       # with data #
       #############
-    } else if (! is.null(datasetInput()) ) {
+    } else if (!is.null(datasetInput())) {
 
       # Access value of chosen variable from dataset
       plot.obj <<- list()
@@ -924,7 +915,7 @@ server <- function(input, output, session) {
 
         # Label axes
         ggplot2::labs(x = input$variable, y = "Probability Density",
-                      title = distributions[distributions$dist_density == dist,
+                      title = shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                                             "distribution"]) +
         axes.limits +
         .theme +
@@ -936,7 +927,7 @@ server <- function(input, output, session) {
   # Headline above plot dependent on plot type (histogram or empiric density)
   output$caption <- renderText({
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       "Theoretic Density Curve"
       # with data
     } else {
@@ -949,7 +940,6 @@ server <- function(input, output, session) {
 
   # Default Parameter(s) of Theoretic Density Function
   output$info_text <- renderText({
-    distributions <- shinydistributions:::distributions
     validate(
       need(expr = input$dist != "",
            message = "")
@@ -957,35 +947,35 @@ server <- function(input, output, session) {
     dist <- input$dist
 
     paste(
-      "Location = ", distributions[distributions$dist_density == dist,
+      "Location = ", shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                                    "default_location"],
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_scale"]), '',
+      ifelse(is.na(shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist, "default_scale"]), '',
         paste("; Scale = ",
-              distributions[distributions$dist_density == dist,
+              shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                             "default_scale"], sep = '')),
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_skewness"]), '',
+      ifelse(is.na(shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist, "default_skewness"]), '',
         paste("; Skewness = ",
-              distributions[distributions$dist_density == dist,
+              shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                             "default_skewness"], sep = '')),
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist, "default_kurtosis"]), '',
+      ifelse(is.na(shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist, "default_kurtosis"]), '',
         paste("; Kurtosis = ",
-              distributions[distributions$dist_density == dist,
+              shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                             "default_kurtosis"], sep = '')),
-      ifelse(is.na(distributions[
-        distributions$dist_density == dist,
+      ifelse(is.na(shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist,
         "default_binomial_denominators"]), '',
         paste("; Binomial denominators = ",
-              distributions[distributions$dist_density == dist,
+              shinydistributions:::distributions[shinydistributions:::distributions$dist_density == dist,
                             "default_binomial_denominators"], sep = '')),
       sep = '')
   })
 
   # Headline Maximum Likelihood Estimates
   output$head_ml_estimates <- renderText({
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       return()
     } else if ( is.null(mle()) ) {
       return()
@@ -995,7 +985,6 @@ server <- function(input, output, session) {
   })
   # Maximum Likelihood Estimates of Parameters
   output$info_text2 <- renderText({
-    distributions <- shinydistributions:::distributions
     if ( is.null(datasetInput()) ) {
       return()
     } else if ( is.null(mle()) ) {
@@ -1006,16 +995,16 @@ server <- function(input, output, session) {
       paste(
         "Location = ", round(mle()[1], digits = 2),
 
-        ifelse(is.na(distributions[
-          distributions$dist_density == dist, "default_scale"]), '',
+        ifelse(is.na(shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == dist, "default_scale"]), '',
           paste("; Scale = ", round(mle()[2], digits = 2), sep = '')),
 
-        ifelse(is.na(distributions[
-          distributions$dist_density == dist, "default_skewness"]), '',
+        ifelse(is.na(shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == dist, "default_skewness"]), '',
           paste("; Skewness = ", round(mle()[3], digits = 2), sep = '')),
 
-        ifelse(is.na(distributions[
-          distributions$dist_density == dist, "default_kurtosis"]), '',
+        ifelse(is.na(shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == dist, "default_kurtosis"]), '',
           paste("; Kurtosis = ", round(mle()[4], digits = 2), sep = '')),
         sep = '')
     }

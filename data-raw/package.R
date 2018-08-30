@@ -10,3 +10,5 @@ usethis::use_testthat()
 
 devtools::document()
 devtools::check()
+devtools::install_github("LarsGerdes/shinydistributions")
+shinydistributions::launch()

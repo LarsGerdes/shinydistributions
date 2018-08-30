@@ -12,10 +12,4 @@ distributions_tab[which(is.na(distributions_tab), arr.ind = TRUE)] <- "-"
 
 # save as sysdata.rda
 devtools::use_data(distributions, distributions_tab, internal = TRUE,
-                   overwrite = TRUE)
-
-# use testthat
-usethis::use_testthat()
-devtools::install_github("LarsGerdes/shinydistributions")
-devtools::check()
-shinydistributions::launch()
+                   overwrite = TRUE, pkg = "shinydistributions")

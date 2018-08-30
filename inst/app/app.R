@@ -164,6 +164,9 @@ server <- function(input, output, session) {
     values$upload_state <- 'reset'
   })
   datasetInput <- reactive({
+    # Increase maximum upload size from 5 MB to 30 MB
+    old <- options(shiny.maxRequestSize = 5*1024^2)
+    options(shiny.maxRequestSize = 30*1024^2)
     if (is.null(values$upload_state)){
       switch (input$r_dataset,
               "iris" = iris,
@@ -172,13 +175,8 @@ server <- function(input, output, session) {
               "None" = return()
       )
     } else if (values$upload_state == 'uploaded') {
-      # Increase maximum upload size from 5 MB to 30 MB
-      old <- options(shiny.maxRequestSize = 5*1024^2)
-      options(shiny.maxRequestSize = 30*1024^2)
       read.csv(file = input$dataset$datapath, header = input$header,
                sep = input$sep, quote = input$quote)
-      # ...and set it back to the initial value
-      on.exit(expr = options(old), add = TRUE)
     } else if (values$upload_state == 'reset') {
       switch (input$r_dataset,
               "iris" = iris,
@@ -187,6 +185,8 @@ server <- function(input, output, session) {
               "None" = return()
       )
     }
+    # ...and set it back to the initial value
+    on.exit(expr = options(old), add = TRUE)
   })
   #output$stop_mle <- renderUI({
   #  actionButton(
@@ -246,7 +246,7 @@ server <- function(input, output, session) {
   #### Tab: Plot Distribution ####
   # Update variable selection based on uploaded data set
   output$variable <- renderUI({
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       return()
     } else {
       selectInput(
@@ -619,17 +619,23 @@ server <- function(input, output, session) {
     )
   })
   # maximum-likelihood-estimates for standard values
+  # checks if data is discrete or continuous with checking if all modulus' are
+  #   equal to zero or if one is unequal to zero (checks if it is a integer)
   mle <- reactive({
+    # Access value of chosen variable from dataset
+    plot.obj <<- list()
+    plot.obj$data <<- datasetInput()
+    plot.obj$variable <<- with(data = plot.obj$data,
+                               expr = get(input$variable))
     # without data
     if (is.null(datasetInput())) {
       return()
       # with data
+      # without numeric input
+    } else if (!is.numeric(plot.obj$variable)) {
+      return()
     } else {
-      # Access value of chosen variable from dataset
-      plot.obj <<- list()
-      plot.obj$data <<- datasetInput()
-      plot.obj$variable <<- with(data = plot.obj$data,
-                                 expr = get(input$variable))
+      # with numeric input
       default.parameter <- c(
         shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
@@ -664,9 +670,8 @@ server <- function(input, output, session) {
       # function: continuous, data: discrete
       if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
-        "discrete_flag"] == 0) &&
-      #  is.integer(plot.obj$variable)) {
-         (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
+        "discrete_flag"] == 0) && all(plot.obj$variable %% 1 == 0)) {
+      #  (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
         showNotification(
           ui = "Input variable is considered as discrete while using a
           continuous function.",
@@ -680,9 +685,8 @@ server <- function(input, output, session) {
       # functions: discrete, data: continuous
       } else if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
-        "discrete_flag"] == 1) &&
-      #          !is.integer(plot.obj$variable)) {
-        (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
+        "discrete_flag"] == 1) && any(plot.obj$variable %% 1 != 0)) {
+      # (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
         showNotification(
           ui = "You are using continuous data with a discrete function.",
           type = "error"
@@ -726,13 +730,13 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "location",
         label = "Location",
-        value = if (is.null(mle()[1])) {
-          shinydistributions:::distributions[
+        value = ifelse(
+          test = is.null(mle()[1]),
+          yes = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
-            "default_location"]
-        } else {
-          round(mle()[1], digits = 2)
-        }
+            "default_location"],
+          no = round(mle()[1], digits = 2)
+        )
       )
     }
   })
@@ -767,7 +771,13 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "scale",
         label = "Scale",
-        value = round(mle()[2], digits = 2),
+        value = ifelse(
+          test = is.null(mle()[2]),
+          yes = shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "default_scale"],
+          no = round(mle()[2], digits = 2)
+        ),
         step = 0.1
       )
     }
@@ -803,7 +813,14 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "skewness",
         label = "Skewness",
-        value = round(mle()[3], digits = 2)
+        value = ifelse(
+          test = is.null(mle()[3]),
+          yes = shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "default_skewness"],
+          no = round(mle()[3], digits = 2)
+        ),
+        step = 0.1
       )
     }
   })
@@ -837,7 +854,14 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "kurtosis",
         label = "Kurtosis",
-        value = round(mle()[4], digits = 2)
+        value = ifelse(
+          test = is.null(mle()[4]),
+          yes = shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "default_kurtosis"],
+          no = round(mle()[4], digits = 2)
+        ),
+        step = 0.1
       )
     }
   })
@@ -912,6 +936,9 @@ server <- function(input, output, session) {
       plot.obj$data <<- datasetInput()
       plot.obj$variable <<- with(data = plot.obj$data,
                                  expr = get(input$variable))
+      validate(
+        need(expr = is.numeric(plot.obj$variable), message = "")
+      )
       density <- density(plot.obj$variable)
       max.density <- max(density$y)
 
@@ -930,7 +957,7 @@ server <- function(input, output, session) {
   # Maximum x-axis
   output$num_max_x <- renderUI({
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       numericInput(
         inputId = "max_x",
         label = "Maximum of X-axis",
@@ -942,6 +969,9 @@ server <- function(input, output, session) {
       plot.obj$data <<- datasetInput()
       plot.obj$variable <<- with(data = plot.obj$data,
                                  expr = get(input$variable))
+      validate(
+        need(expr = is.numeric(plot.obj$variable), message = "")
+      )
       numericInput(
         inputId = "max_x",
         label = "Maximum of X-axis",
@@ -964,6 +994,9 @@ server <- function(input, output, session) {
       plot.obj$data <<- datasetInput()
       plot.obj$variable <<- with(data = plot.obj$data,
                                  expr = get(input$variable))
+      validate(
+        need(expr = is.numeric(plot.obj$variable), message = "")
+      )
       numericInput(
         inputId = "min_x",
         label = "Minimum of X-axis",
@@ -979,7 +1012,15 @@ server <- function(input, output, session) {
   output$p <- renderPlot({
     validate(
       need(expr = input$dist != "",
-           message = "")
+           message = ""),
+      if (!is.null(input$variable)) {
+        plot.obj <<- list()
+        plot.obj$data <<- datasetInput()
+        plot.obj$variable <<- with(data = plot.obj$data,
+                                   expr = get(input$variable))
+        need(expr = is.numeric(plot.obj$variable),
+             message = "Varible has to be numeric.")
+      }
     )
     # Define selected distribution as "dist" for usage within renderPlot
     dist <- input$dist
@@ -1149,7 +1190,7 @@ server <- function(input, output, session) {
   output$head_ml_estimates <- renderText({
     if (is.null(datasetInput())) {
       return()
-    } else if ( is.null(mle()) ) {
+    } else if (is.null(mle())) {
       return()
     } else {
       "Maximum Likelihood Estimate(s) of Parameter(s):"
@@ -1157,9 +1198,10 @@ server <- function(input, output, session) {
   })
   # Maximum Likelihood Estimates of Parameters
   output$info_text2 <- renderText({
-    if ( is.null(datasetInput()) ) {
+
+    if (is.null(datasetInput())) {
       return()
-    } else if ( is.null(mle()) ) {
+    } else if (is.null(mle())) {
       return()
     } else {
       dist <- input$dist

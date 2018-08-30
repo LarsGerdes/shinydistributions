@@ -7,6 +7,13 @@
 # @example \dontrun {launch()}
 
 # run the app
+#launch <- function() {
+#  #shinydistributions <-
+#  shiny::shinyApp(ui = ui, server = server)
+#  #shiny::runApp(shinydistributions)
+#}
+
+
 launch <- function() {
-  shiny::shinyApp(system.file("launch", package = "shinydistributions"))
+  shiny::runApp(appDir = system.file("app", package = "shinydistributions"))
 }

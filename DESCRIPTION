@@ -20,3 +20,5 @@ Imports:
 Depends: R (>= 2.10)
 BugReports: https://github.com/LarsGerdes/shinydistributions/issues
 RoxygenNote: 6.1.0
+Suggests: 
+    testthat

@@ -12,3 +12,7 @@ devtools::document()
 devtools::check()
 devtools::install_github("LarsGerdes/shinydistributions")
 shinydistributions::launch()
+
+# Uninstall - for testing, or if there are problems
+remove.packages("shinydistributions")
+.rs.restartR()

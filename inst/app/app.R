@@ -1023,11 +1023,11 @@ server <- function(input, output, session) {
         inputId = "max_x",
         label = "Maximum of X-axis",
         value = ifelse(
-          test = is.na(shinydistributions::distributions[
+          test = is.na(shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_upper_bound"]),
           yes = 5,
-          no = shinydistributions::distributions[
+          no = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_upper_bound"]
         )
@@ -1056,11 +1056,11 @@ server <- function(input, output, session) {
         inputId = "min_x",
         label = "Minimum of X-axis",
         value = ifelse(
-          test = is.na(shinydistributions::distributions[
+          test = is.na(shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_lower_bound"]),
           yes = -5,
-          no = shinydistributions::distributions[
+          no = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_lower_bound"]
         )

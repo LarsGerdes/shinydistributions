@@ -164,9 +164,6 @@ server <- function(input, output, session) {
     values$upload_state <- 'reset'
   })
   datasetInput <- reactive({
-    # Increase maximum upload size from 5 MB to 30 MB
-    old <- options(shiny.maxRequestSize = 5*1024^2)
-    options(shiny.maxRequestSize = 30*1024^2)
     if (is.null(values$upload_state)){
       switch (input$r_dataset,
               "iris" = iris,
@@ -175,8 +172,13 @@ server <- function(input, output, session) {
               "None" = return()
       )
     } else if (values$upload_state == 'uploaded') {
+      # Increase maximum upload size from 5 MB to 30 MB
+      old <- options(shiny.maxRequestSize = 5*1024^2)
+      options(shiny.maxRequestSize = 30*1024^2)
       read.csv(file = input$dataset$datapath, header = input$header,
                sep = input$sep, quote = input$quote)
+      # ...and set it back to the initial value
+      on.exit(expr = options(old))
     } else if (values$upload_state == 'reset') {
       switch (input$r_dataset,
               "iris" = iris,
@@ -185,8 +187,6 @@ server <- function(input, output, session) {
               "None" = return()
       )
     }
-    # ...and set it back to the initial value
-    on.exit(expr = options(old), add = TRUE)
   })
   #output$stop_mle <- renderUI({
   #  actionButton(
@@ -197,7 +197,7 @@ server <- function(input, output, session) {
   # Display data frame or summary of data
   output$contents <- DT::renderDataTable({
 
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       return()
     } else {
 
@@ -334,7 +334,8 @@ server <- function(input, output, session) {
       }
       if (input$parameters == 2) {
         choices.parameters <- two
-        selected <- "Normal (mu, var) - dNO2"
+        selected <- "Normal (mean, var) - dNO2"
+
       }
       if (input$parameters == 1) {
         choices.parameters <- one
@@ -342,7 +343,7 @@ server <- function(input, output, session) {
       }
       if (input$parameters == "all") {
         choices.parameters <- all
-        selected <- "Normal (mu, var) - dNO2"
+        selected <- "Normal (mean, var) - dNO2"
       }
     }
     if (input$fun_type == "all") {
@@ -357,7 +358,7 @@ server <- function(input, output, session) {
       }
       if (input$parameters == 2) {
         choices.parameters <- two
-        selected <- "Normal (mu, var) - dNO2"
+        selected <- "Normal (mean, var) - dNO2"
       }
       if (input$parameters == 1) {
         choices.parameters <- one
@@ -365,7 +366,7 @@ server <- function(input, output, session) {
       }
       if (input$parameters == "all") {
         choices.parameters <- all
-        selected <- "Normal (mu, var) - dNO2"
+        selected <- "Normal (mean, var) - dNO2"
       }
     }
     choices <- choices.parameters[choices.parameters %in% choices.type]
@@ -439,8 +440,8 @@ server <- function(input, output, session) {
       "Negative Binomial type I - dNBI" = function(y) gamlss.dist::dNBI(y, mu = input$location, sigma = input$scale),
       "Negative Binomial type II - dNBII" = function(y) gamlss.dist::dNBII(y, mu = input$location, sigma = input$scale),
       "Normal Exponential t - dNET" = function(y) gamlss.dist::dNET(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
-      "Normal (mu, sd) - dNO" = function(y) gamlss.dist::dNO(y, mu = input$location, sigma = input$scale),
-      "Normal (mu, var) - dNO2" = function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale),
+      "Normal (mean, sd) - dNO" = function(y) gamlss.dist::dNO(y, mu = input$location, sigma = input$scale),
+      "Normal (mean, var) - dNO2" = function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale),
       "Normal Family - dNOF" = function(y) gamlss.dist::dNOF(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Pareto type 2 - dPARETO2" = function(y) gamlss.dist::dPARETO2(y, mu = input$location, sigma = input$scale),
       "Pareto type 2 original - dPARETO2o" = function(y) gamlss.dist::dPARETO2o(y, mu = input$location, sigma = input$scale),
@@ -498,7 +499,7 @@ server <- function(input, output, session) {
       "Zero inflated PIG - dZIPIG" = function(y) gamlss.dist::dZIPIG(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Zero inflated Sichel - dZISICHEL" = function(y) gamlss.dist::dZISICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
 
-      # default: "Normal (mu, var) - dNO2"
+      # default: "Normal (mean, var) - dNO2"
       function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
     )
   })
@@ -556,8 +557,8 @@ server <- function(input, output, session) {
                    "Negative Binomial type I - dNBI" = gamlss.dist::dNBI,
                    "Negative Binomial type II - dNBII" = gamlss.dist::dNBII,
                    "Normal Exponential t - dNET" = gamlss.dist::dNET,
-                   "Normal (mu, sd) - dNO" = gamlss.dist::dNO,
-                   "Normal (mu, var) - dNO2" = gamlss.dist::dNO2,
+                   "Normal (mean, sd) - dNO" = gamlss.dist::dNO,
+                   "Normal (mean, var) - dNO2" = gamlss.dist::dNO2,
                    "Normal Family - dNOF" = gamlss.dist::dNOF,
                    "Pareto type 2 - dPARETO2" = gamlss.dist::dPARETO2,
                    "Pareto type 2 original - dPARETO2o" = gamlss.dist::dPARETO2o,
@@ -615,7 +616,7 @@ server <- function(input, output, session) {
                    "Zero inflated PIG - dZIPIG" = gamlss.dist::dZIPIG,
                    "Zero inflated Sichel - dZISICHEL" = gamlss.dist::dZISICHEL,
 
-                   gamlss.dist::dNO2 # default: "Normal (mu, var) - dNO2"
+                   gamlss.dist::dNO2 # default: "Normal (mean, var) - dNO2"
     )
   })
   # maximum-likelihood-estimates for standard values
@@ -653,7 +654,7 @@ server <- function(input, output, session) {
       default.parameter[is.na(default.parameter)] <- 0
       binomial_denominator <- shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
-        "default_binomial_denominators"]
+        "default_binomial_denominator"]
       log.likelihood <- function(parameter, data) {
         -sum(R.utils::doCall(
           d_funct2(),
@@ -677,10 +678,40 @@ server <- function(input, output, session) {
           continuous function.",
           type = "warning"
         )
-        mle <- optim(par = default.parameter, fn = log.likelihood,
-                     data = plot.obj$variable,
-                     lower = c(0.000001, 0.000001, 0.000001, 0.000001),
-                     method = "L-BFGS-B")
+        mle <- optim(
+          par = default.parameter,
+          fn = log.likelihood,
+          data = plot.obj$variable,
+          lower = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_lower_bound"]
+          ),
+          upper = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_upper_bound"]
+          ),
+          method = "L-BFGS-B"
+        )
         mle <- mle$par
       # functions: discrete, data: continuous
       } else if ((shinydistributions:::distributions[
@@ -695,10 +726,40 @@ server <- function(input, output, session) {
         #mle <- default.parameter
       # function type and data type are equal
       } else {
-        mle <- optim(par = default.parameter, fn = log.likelihood,
-                     data = plot.obj$variable,
-                     lower = c(0.000001, 0.000001, 0.000001, 0.000001),
-                     method = "L-BFGS-B")
+        mle <- optim(
+          par = default.parameter,
+          fn = log.likelihood,
+          data = plot.obj$variable,
+          lower = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_lower_bound"]
+          ),
+          upper = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_upper_bound"]
+          ),
+          method = "L-BFGS-B"
+        )
         mle <- mle$par
       }
     }
@@ -874,12 +935,12 @@ server <- function(input, output, session) {
     # Hide if binomial denominators is not a parameter of the density function
     if (is.na(shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
-      "default_binomial_denominators"])) {
+      "default_binomial_denominator"])) {
       return()
     }
     binomial_denominator <- shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
-      "default_binomial_denominators"]
+      "default_binomial_denominator"]
     numericInput(
       inputId = "binomial_denominators",
       label = "Binomial denominators",
@@ -961,7 +1022,15 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "max_x",
         label = "Maximum of X-axis",
-        value = 5
+        value = ifelse(
+          test = is.na(shinydistributions::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "x_upper_bound"]),
+          yes = 5,
+          no = shinydistributions::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "x_upper_bound"]
+        )
       )
       # with data
     } else {
@@ -986,7 +1055,15 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "min_x",
         label = "Minimum of X-axis",
-        value = -5
+        value = ifelse(
+          test = is.na(shinydistributions::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "x_lower_bound"]),
+          yes = -5,
+          no = shinydistributions::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            "x_lower_bound"]
+        )
       )
       # with data
     } else {
@@ -1179,10 +1256,10 @@ server <- function(input, output, session) {
           "default_kurtosis"], sep = '')),
       ifelse(is.na(shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == dist,
-        "default_binomial_denominators"]), '',
+        "default_binomial_denominator"]), '',
         paste("; Binomial denominators = ", shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == dist,
-          "default_binomial_denominators"], sep = '')),
+          "default_binomial_denominator"], sep = '')),
       sep = '')
   })
 

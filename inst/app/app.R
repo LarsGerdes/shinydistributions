@@ -151,16 +151,17 @@ server <- function(input, output, session) {
   # input$dataset will be NULL initially. After the user selects
   # and uploads a file, head of that data file by default,
   # or summary if selected, will be shown.
+
   # Increase maximum upload size from 5 MB to 30 MB
   #old <- options(shiny.maxRequestSize = 5*1024^2)
   options(shiny.maxRequestSize = 30*1024^2)
+
   # Upload data and reset-button to switch between upload and R data sets
   values <- reactiveValues(upload_state = NULL)
 
   observeEvent(input$dataset, {
     values$upload_state <- 'uploaded'
   })
-
   observeEvent(input$reset, {
     values$upload_state <- 'reset'
   })
@@ -510,6 +511,120 @@ server <- function(input, output, session) {
       #function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
     )
   })
+  # Quantile function to estimate lower and upper bounds (without data)
+  q_funct <- reactive({
+    dist <- switch(input$dist,
+                   "Beta Binomial - dBB" = gamlss.dist::qBB,
+                   "Box-Cox Cole and Green - dBCCG" = gamlss.dist::qBCCG,
+                   "Box-Cox Cole and Green - dBCCGo" = gamlss.dist::qBCCGo,
+                   "Box-Cox Power Exponential - dBCPE" = gamlss.dist::qBCPE,
+                   "Box-Cox Power Exponential - dBCPEo" = gamlss.dist::qBCPEo,
+                   "Box-Cox-t - dBCT" = gamlss.dist::qBCT,
+                   "Box-Cox-t - dBCTo" = gamlss.dist::qBCTo,
+                   "Beta - dBE" = gamlss.dist::qBE,
+                   "Beta inflated - dBEINF" = gamlss.dist::qBEINF,
+                   "Beta inflated - dBEINF0" = gamlss.dist::qBEINF0,
+                   "Beta inflated - dBEINF1" = gamlss.dist::qBEINF1,
+                   "Beta - dBEo" = gamlss.dist::qBEo,
+                   "Beta one inflated - dBEOI" = gamlss.dist::qBEOI,
+                   "Beta zero inflated - dBEZI" = gamlss.dist::qBEZI,
+                   "Binomial - dBI" = gamlss.dist::qBI,
+                   "Beta negative binomial - dBNB" = gamlss.dist::qBNB,
+                   "Double binomial - dDBI" = gamlss.dist::qDBI,
+                   "Delaport - dDEL" = gamlss.dist::qDEL,
+                   "Double Poisson - dDPO" = gamlss.dist::qDPO,
+                   "Exponential generalized Beta type 2 - dEGB2" = gamlss.dist::qEGB2,
+                   "Exponential Gaussian - dexGAUS" = gamlss.dist::qexGAUS,
+                   "Exponential - dEXP" = gamlss.dist::qEXP,
+                   "Gamma - dGA" = gamlss.dist::qGA,
+                   "Generalized Beta type 1 - dGB1" = gamlss.dist::qGB1,
+                   "Generalized Beta type 2 - dGB2" = gamlss.dist::qGB2,
+                   "Geometric - dGEOM" = gamlss.dist::qGEOM,
+                   "Geometric (original) - dGEOMo" = gamlss.dist::qGEOMo,
+                   "Generalized Gamma - dGG" = gamlss.dist::qGG,
+                   "Generalized Inverse Gaussian - dGIG" = gamlss.dist::qGIG,
+                   "Generalised Pareto - dGP" = gamlss.dist::qGP,
+                   "Generalised Pareto - dGPO" = gamlss.dist::qGPO,
+                   "Generalized t - dGT" = gamlss.dist::qGT,
+                   "Gumbel - dGU" = gamlss.dist::qGU,
+                   "Inverse Gaussian - dIG" = gamlss.dist::qIG,
+                   "Inverse Gamma - dIGAMMA" = gamlss.dist::qIGAMMA,
+                   "Johnson's SU - dJSU" = gamlss.dist::qJSU,
+                   "Johnson's SU - dJSUo" = gamlss.dist::qJSUo,
+                   "Logarithmic - dLG" = gamlss.dist::qLG,
+                   "log-Normal (Box-Cox) - dLNO" = gamlss.dist::qLNO,
+                   "Logistic - dLO" = gamlss.dist::qLO,
+                   "Logit Normal - dLOGITNO" = gamlss.dist::qLOGITNO,
+                   "log-Normal - dLOGNO" = gamlss.dist::qLOGNO,
+                   "log-Normal - dLOGNO2" = gamlss.dist::qLOGNO2,
+                   "Normal Linear Quadratic - dLQNO" = gamlss.dist::qLQNO,
+                   "Multinomial - dMN3" = gamlss.dist::qMN3,
+                   "Multinomial - dMN4" = gamlss.dist::qMN4,
+                   "Multinomial - dMN5" = gamlss.dist::qMN5,
+                   "Negative Binomial family - dNBF" = gamlss.dist::qNBF,
+                   "Negative Binomial type I - dNBI" = gamlss.dist::qNBI,
+                   "Negative Binomial type II - dNBII" = gamlss.dist::qNBII,
+                   "Normal Exponential t - dNET" = gamlss.dist::qNET,
+                   "Normal (mean, sd) - dNO" = gamlss.dist::qNO,
+                   "Normal (mean, var) - dNO2" = gamlss.dist::qNO2,
+                   "Normal Family - dNOF" = gamlss.dist::qNOF,
+                   "Pareto type 2 - dPARETO2" = gamlss.dist::qPARETO2,
+                   "Pareto type 2 original - dPARETO2o" = gamlss.dist::qPARETO2o,
+                   "Power Exponential - dPE" = gamlss.dist::qPE,
+                   "Power Exponential type 2 - dPE2" = gamlss.dist::qPE2,
+                   "Poisson inverse Gaussian - dPIG" = gamlss.dist::qPIG,
+                   "Poison - dPO" = gamlss.dist::qPO,
+                   "Reverse Gumbel - dRG" = gamlss.dist::qRG,
+                   "Reverse generalized extreme - dRGE" = gamlss.dist::qRGE,
+                   "Skew Power Exponential - dSEP" = gamlss.dist::qSEP,
+                   "Skew Power Exponential type 1 - dSEP1" = gamlss.dist::qSEP1,
+                   "Skew Power Exponential type 2 - dSEP2" = gamlss.dist::qSEP2,
+                   "Skew Power Exponential type 3 - dSEP3" = gamlss.dist::qSEP3,
+                   "Skew Power Exponential type 4 - dSEP4" = gamlss.dist::qSEP4,
+                   "Shash - dSHASH" = gamlss.dist::qSHASH,
+                   "Shash original - dSHASHo" = gamlss.dist::qSHASHo,
+                   "Shash original 2 - dSHASHo2" = gamlss.dist::qSHASHo2,
+                   "Sichel (original) - dSI" = gamlss.dist::qSI,
+                   "Sichel (mu as the maen) - dSICHEL" = gamlss.dist::qSICHEL,
+                   "Skew Normal Type 1 - dSN1" = gamlss.dist::qSN1,
+                   "Skew Normal Type 2 - dSN2" = gamlss.dist::qSN2,
+                   "Skew t - dSST" = gamlss.dist::qSST,
+                   "Skew t type 1 - dST1" = gamlss.dist::qST1,
+                   "Skew t type 2 - dST2" = gamlss.dist::qST2,
+                   "Skew t type 3 - dST3" = gamlss.dist::qST3,
+                   "Skew t - dST3C" = gamlss.dist::qST3C,
+                   "Skew t type 4 - dST4" = gamlss.dist::qST4,
+                   "Skew t type 5 - dST5" = gamlss.dist::qST5,
+                   "t-distribution - dTF" = gamlss.dist::qTF,
+                   "t-distribution - dTF2" = gamlss.dist::qTF2,
+                   "Waring - dWARING" = gamlss.dist::qWARING,
+                   "Weibull - dWEI" = gamlss.dist::qWEI,
+                   "Weibull(PH parameterization) - dWEI2" = gamlss.dist::qWEI2,
+                   "Weibull (mu as mean) - dWEI3" = gamlss.dist::qWEI3,
+                   "Yule - dYULE" = gamlss.dist::qYULE,
+                   "Zero adjusted beta binomial - dZABB" = gamlss.dist::qZABB,
+                   "Zero adjusted binomial - dZABI" = gamlss.dist::qZABI,
+                   "Zero adjusted beta neg. bin. - dZABNB" = gamlss.dist::qZABNB,
+                   "Zero adjusted Gamma - dZAGA" = gamlss.dist::qZAGA,
+                   "Zero adjusted IG - dZAIG" = gamlss.dist::qZAIG,
+                   "Zero adjusted logarithmic - dZALG" = gamlss.dist::qZALG,
+                   "Zero adjusted neg. bin. - dZANBI" = gamlss.dist::qZANBI,
+                   "Zero adjusted poisson - dZAP" = gamlss.dist::qZAP,
+                   "Zero adjusted PIG - dZAPIG" = gamlss.dist::qZAPIG,
+                   "Zero adjusted Sichel - dZASICHEL" = gamlss.dist::qZASICHEL,
+                   "Zero adjusted Zipf - dZAZIPF" = gamlss.dist::qZAZIPF,
+                   "Zero inflated beta binomial - dZIBB" = gamlss.dist::qZIBB,
+                   "Zero inflated binomial - dZIBI" = gamlss.dist::qZIBI,
+                   "Zero inflated beta neg. bin. - dZIBNB" = gamlss.dist::qZIBNB,
+                   "Zero inflated neg. bin. family - dZINBF" = gamlss.dist::qZINBF,
+                   "Zero inflated neg. bin. - dZINBI" = gamlss.dist::qZINBI,
+                   "Zero inflated poisson - dZIP" = gamlss.dist::qZIP,
+                   "Zero inf. poiss.(mu as mean) - dZIP2" = gamlss.dist::qZIP2,
+                   "Zipf - dZIPF" = gamlss.dist::qZIPF,
+                   "Zero inflated PIG - dZIPIG" = gamlss.dist::qZIPIG,
+                   "Zero inflated Sichel - dZISICHEL" = gamlss.dist::qZISICHEL
+    )
+  })
   # Density functions only for Maximum Likelihood Estimation below
   d_funct2 <- reactive({
     dist <- switch(input$dist,
@@ -652,9 +767,8 @@ server <- function(input, output, session) {
       binomial_denominator <- shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "default_binomial_denominator"]
-      # Compute log-likelihood
       log.likelihood <- function(parameter, data) {
-        sum(R.utils::doCall(
+        -sum(R.utils::doCall(
           d_funct2(),
           x = data,
           log = TRUE,
@@ -670,7 +784,7 @@ server <- function(input, output, session) {
       if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "discrete_flag"] == 0) && all(plot.obj$variable %% 1 == 0)) {
-        #  (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
+      #  (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
         showNotification(
           ui = "Input variable is considered as discrete while using a
           continuous function.",
@@ -680,47 +794,82 @@ server <- function(input, output, session) {
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
-          lower = as.numeric(shinydistributions:::distributions[
-            shinydistributions:::distributions$dist_density == input$dist,
-            c("location_lower_bound", "scale_lower_bound",
-              "skewness_lower_bound", "kurtosis_lower_bound")
-            ]),
-          upper = as.numeric(shinydistributions:::distributions[
-            shinydistributions:::distributions$dist_density == input$dist,
-            c("location_upper_bound", "scale_upper_bound",
-              "skewness_upper_bound", "kurtosis_upper_bound")
-            ]),
+          lower = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_lower_bound"]
+          ),
+          upper = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_upper_bound"]
+          ),
           method = "L-BFGS-B"
         )
         mle <- mle$par
-        # functions: discrete, data: continuous
+      # functions: discrete, data: continuous
       } else if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "discrete_flag"] == 1) && any(plot.obj$variable %% 1 != 0)) {
-        # (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
+      # (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
         showNotification(
           ui = "You are using continuous data with a discrete function.",
           type = "error"
         )
         mle <- return()
         #mle <- default.parameter
-        # function type and data type are equal
+      # function type and data type are equal
       } else {
         mle <- optim(
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
-          lower = as.numeric(shinydistributions:::distributions[
-            shinydistributions:::distributions$dist_density == input$dist,
-            c("location_lower_bound", "scale_lower_bound",
-              "skewness_lower_bound", "kurtosis_lower_bound")
-            ]),
-          upper = as.numeric(shinydistributions:::distributions[
-            shinydistributions:::distributions$dist_density == input$dist,
-            c("location_upper_bound", "scale_upper_bound",
-              "skewness_upper_bound", "kurtosis_upper_bound")
-            ]),
-
+          lower = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_lower_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_lower_bound"]
+          ),
+          upper = c(
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "location_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "scale_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "skewness_upper_bound"],
+            shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "kurtosis_upper_bound"]
+          ),
           method = "L-BFGS-B"
         )
         mle <- mle$par
@@ -1119,6 +1268,7 @@ server <- function(input, output, session) {
          shinydistributions:::distributions[
            shinydistributions:::distributions$dist_density == dist,
            "discrete_flag"] != 1) {
+
       # ggplot
       ggplot2::ggplot() +
         # Label axes and set limits

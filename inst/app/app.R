@@ -46,7 +46,7 @@ ui <- fluidPage(
           uiOutput(outputId = "num_scale"),
           uiOutput(outputId = "num_skewness"),
           uiOutput(outputId = "num_kurtosis"),
-          uiOutput(outputId = "num_binomial_denominators"),
+          uiOutput(outputId = "num_binomial_denominator"),
           # Horizontal line
           tags$hr(),
           uiOutput(outputId = "num_max_y"),
@@ -58,7 +58,7 @@ ui <- fluidPage(
           uiOutput(outputId = "plot"),
           br(),
           br(),
-          h4("Default Parameter(s) of Theoretic Density Function:"),
+          h4(textOutput(outputId = "head_default_parameters")),
           tags$b(textOutput(outputId = "info_text"), style = "font-size:120%"),
           br(),
           h4(textOutput(outputId = "head_ml_estimates")),
@@ -83,7 +83,6 @@ ui <- fluidPage(
                        "text/comma-separated-values,text/plain", ".csv")
           ),
           actionButton('reset', 'Reset Input'),
-          #uiOutput(outputId = "stop_mle"),
           # Horizontal line
           tags$hr(),
           # Input: Checkbox if file has header
@@ -151,8 +150,10 @@ server <- function(input, output, session) {
   #### Tab: Data upload ####
   # input$dataset will be NULL initially. After the user selects
   # and uploads a file, head of that data file by default,
-  # or all rows if selected, will be shown.
-
+  # or summary if selected, will be shown.
+  # Increase maximum upload size from 5 MB to 30 MB
+  #old <- options(shiny.maxRequestSize = 5*1024^2)
+  options(shiny.maxRequestSize = 30*1024^2)
   # Upload data and reset-button to switch between upload and R data sets
   values <- reactiveValues(upload_state = NULL)
 
@@ -172,13 +173,10 @@ server <- function(input, output, session) {
               "None" = return()
       )
     } else if (values$upload_state == 'uploaded') {
-      # Increase maximum upload size from 5 MB to 30 MB
-      old <- options(shiny.maxRequestSize = 5*1024^2)
-      options(shiny.maxRequestSize = 30*1024^2)
       read.csv(file = input$dataset$datapath, header = input$header,
                sep = input$sep, quote = input$quote)
-      # ...and set it back to the initial value
-      on.exit(expr = options(old))
+      # Set maximum upload size back to the initial value after upload
+      #on.exit(expr = options(old))
     } else if (values$upload_state == 'reset') {
       switch (input$r_dataset,
               "iris" = iris,
@@ -188,12 +186,6 @@ server <- function(input, output, session) {
       )
     }
   })
-  #output$stop_mle <- renderUI({
-  #  actionButton(
-  #    inputId = "stop_mle",
-  #    label = "Stop Maximum-Likelihood-Estimation"
-  #  )
-  #})
   # Display data frame or summary of data
   output$contents <- DT::renderDataTable({
 
@@ -202,20 +194,21 @@ server <- function(input, output, session) {
     } else {
 
       if (input$display == "Data Frame") {
-
+        # Selected number of records shown per page (range to chose from
+        # dependent on data set size)
         page_length <-  if (nrow(datasetInput()) > 100){
           c(10, 15, 20, 50, 100, nrow(datasetInput()) )
-        } else if (nrow(datasetInput()) <= 10) {
-          nrow(datasetInput())
-        } else if (nrow(datasetInput()) <= 15) {
-          c(10, nrow(datasetInput()) )
-        } else if (nrow(datasetInput()) <= 20) {
-          c(10, 15, nrow(datasetInput()) )
-        } else if (nrow(datasetInput()) <= 50) {
-          c(10, 15, 20, nrow(datasetInput()) )
-        } else if (nrow(datasetInput()) <= 100) {
-          c(10, 15, 20, 50, nrow(datasetInput()) )
-        }
+          } else if (nrow(datasetInput()) <= 10) {
+            nrow(datasetInput())
+          } else if (nrow(datasetInput()) <= 15) {
+            c(10, nrow(datasetInput()) )
+          } else if (nrow(datasetInput()) <= 20) {
+            c(10, 15, nrow(datasetInput()) )
+          } else if (nrow(datasetInput()) <= 50) {
+            c(10, 15, 20, nrow(datasetInput()) )
+          } else if (nrow(datasetInput()) <= 100) {
+            c(10, 15, 20, 50, nrow(datasetInput()) )
+          }
         DT::datatable(datasetInput(), rownames = FALSE,
                       options = list(
                         lengthMenu = page_length,
@@ -231,16 +224,12 @@ server <- function(input, output, session) {
       summary(object = datasetInput())
     }
   })
-
   #### Tab: Properties of Distributions ####
   output$distributions_tab <- DT::renderDataTable({
     DT::datatable(shinydistributions:::distributions_tab, rownames = FALSE,
                   options = list(lengthMenu = c(10, 15, 20, 50, 109),
                                  pageLength = 10
-                                 #columnDefs = list(
-                                 # list(className = 'dt-left', targets= '_all')
-                                 #)
-                  )
+                                 )
     )
   })
   #### Tab: Plot Distribution ####
@@ -255,6 +244,24 @@ server <- function(input, output, session) {
         choices = colnames(datasetInput())
       )
     }
+  })
+  # Update no of parameters based on fun_type
+  observe({
+    if (input$fun_type != "mixed") {
+      choices <- c("all", 1, 2, 3, 4)
+      selected <- "all"
+    } else {
+      choices <- c("all", 3, 4)
+      selected <- "all"
+    }
+    updateRadioButtons(
+      session = session,
+      inputId = "parameters",
+      label = "No of Parameters",
+      choices = choices,
+      selected = selected,
+      inline = TRUE
+    )
   })
   # Update density function based on selected type and parameters
   observe({
@@ -385,17 +392,17 @@ server <- function(input, output, session) {
   # of necessary if-else statements doesn't need to run every single time a user
   # selects a different function from the drop down menu.The functions contain 1
   # to 4 paramters only (location / scale / skewness / kurtosis). Binomial
-  # distributions include parameter "bd" (binomial denominators) additionally.
+  # distributions include parameter "bd" (binomial denominator) additionally.
   d_funct <- reactive({
     dist <- switch(
       EXPR = input$dist,
-      "Beta Binomial - dBB" = function(y) gamlss.dist::dBB(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominators),
+      "Beta Binomial - dBB" = function(y) gamlss.dist::dBB(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominator),
       "Box-Cox Cole and Green - dBCCG" = function(y) gamlss.dist::dBCCG(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Box-Cox Cole and Green - dBCCGo" = function(y) gamlss.dist::dBCCGo(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Box-Cox Power Exponential - dBCPE" = function(y) gamlss.dist::dBCPE(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
-      "Box-Cox Power Exponential - dBCPEo" = function(y) gamlss.dist::dBCPEo(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Box-Cox Power Exponential - dBCPEo" = function(y) gamlss.dist::dBCPEo(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Box-Cox-t - dBCT" = function(y) gamlss.dist::dBCT(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
-      "Box-Cox-t - dBCTo" = function(y) gamlss.dist::dBCTo(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Box-Cox-t - dBCTo" = function(y) gamlss.dist::dBCTo(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Beta - dBE" = function(y) gamlss.dist::dBE(y, mu = input$location, sigma = input$scale),
       "Beta inflated - dBEINF" = function(y) gamlss.dist::dBEINF(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Beta inflated - dBEINF0" = function(y) gamlss.dist::dBEINF0(y, mu = input$location, sigma = input$scale, nu = input$skewness),
@@ -403,9 +410,9 @@ server <- function(input, output, session) {
       "Beta - dBEo" = function(y) gamlss.dist::dBEo(y, mu = input$location, sigma = input$scale),
       "Beta one inflated - dBEOI" = function(y) gamlss.dist::dBEOI(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Beta zero inflated - dBEZI" = function(y) gamlss.dist::dBEZI(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Binomial - dBI" = function(y) gamlss.dist::dBI(y, mu = input$location, bd = input$binomial_denominators),
+      "Binomial - dBI" = function(y) gamlss.dist::dBI(y, mu = input$location, bd = input$binomial_denominator),
       "Beta negative binomial - dBNB" = function(y) gamlss.dist::dBNB(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Double binomial - dDBI" = function(y) gamlss.dist::dDBI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominators),
+      "Double binomial - dDBI" = function(y) gamlss.dist::dDBI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominator),
       "Delaport - dDEL" = function(y) gamlss.dist::dDEL(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Double Poisson - dDPO" = function(y) gamlss.dist::dDPO(y, mu = input$location, sigma = input$scale),
       "Exponential generalized Beta type 2 - dEGB2" = function(y) gamlss.dist::dEGB2(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
@@ -425,7 +432,7 @@ server <- function(input, output, session) {
       "Inverse Gaussian - dIG" = function(y) gamlss.dist::dIG(y, mu = input$location, sigma = input$scale),
       "Inverse Gamma - dIGAMMA" = function(y) gamlss.dist::dIGAMMA(y, mu = input$location, sigma = input$scale),
       "Johnson's SU - dJSU" = function(y) gamlss.dist::dJSU(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
-      "Johnson's SU - dJSUo" = function(y) gamlss.dist::dJSUo(y, mu = input$location),
+      "Johnson's SU - dJSUo" = function(y) gamlss.dist::dJSUo(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Logarithmic - dLG" = function(y) gamlss.dist::dLG(y, mu = input$location),
       "log-Normal (Box-Cox) - dLNO" = function(y) gamlss.dist::dLNO(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Logistic - dLO" = function(y) gamlss.dist::dLO(y, mu = input$location, sigma = input$scale),
@@ -435,7 +442,7 @@ server <- function(input, output, session) {
       "Normal Linear Quadratic - dLQNO" = function(y) gamlss.dist::dLQNO(y, mu = input$location, sigma = input$scale),
       "Multinomial - dMN3" = function(y) gamlss.dist::dMN3(y, mu = input$location, sigma = input$scale),
       "Multinomial - dMN4" = function(y) gamlss.dist::dMN4(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Multinomial - dMN5" = function(y) gamlss.dist::dMN5(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Multinomial - dMN5" = function(y) gamlss.dist::dMN5(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Negative Binomial family - dNBF" = function(y) gamlss.dist::dNBF(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Negative Binomial type I - dNBI" = function(y) gamlss.dist::dNBI(y, mu = input$location, sigma = input$scale),
       "Negative Binomial type II - dNBII" = function(y) gamlss.dist::dNBII(y, mu = input$location, sigma = input$scale),
@@ -451,7 +458,7 @@ server <- function(input, output, session) {
       "Poison - dPO" = function(y) gamlss.dist::dPO(y, mu = input$location),
       "Reverse Gumbel - dRG" = function(y) gamlss.dist::dRG(y, mu = input$location, sigma = input$scale),
       "Reverse generalized extreme - dRGE" = function(y) gamlss.dist::dRGE(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew Power Exponential - dSEP" = function(y) gamlss.dist::dSEP(y, mu = input$location),
+      "Skew Power Exponential - dSEP" = function(y) gamlss.dist::dSEP(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Skew Power Exponential type 1 - dSEP1" = function(y) gamlss.dist::dSEP1(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Skew Power Exponential type 2 - dSEP2" = function(y) gamlss.dist::dSEP2(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Skew Power Exponential type 3 - dSEP3" = function(y) gamlss.dist::dSEP3(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
@@ -460,50 +467,50 @@ server <- function(input, output, session) {
       "Shash original - dSHASHo" = function(y) gamlss.dist::dSHASHo(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Shash original 2 - dSHASHo2" = function(y) gamlss.dist::dSHASHo2(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Sichel (original) - dSI" = function(y) gamlss.dist::dSI(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Sichel (mu as the maen) - dSICHEL" = function(y) gamlss.dist::dSICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew Normal Type 1 - dSN1" = function(y) gamlss.dist::dSN1(y, mu = input$location),
-      "Skew Normal Type 2 - dSN2" = function(y) gamlss.dist::dSN2(y, mu = input$location, sigma = input$scale),
-      "Skew t - dSST" = function(y) gamlss.dist::dSST(y, mu = input$location, sigma = input$scale),
-      "Skew t type 1 - dST1" = function(y) gamlss.dist::dST1(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew t type 2 - dST2" = function(y) gamlss.dist::dST2(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew t type 3 - dST3" = function(y) gamlss.dist::dST3(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew t - dST3C" = function(y) gamlss.dist::dST3C(y, mu = input$location, sigma = input$scale),
-      "Skew t type 4 - dST4" = function(y) gamlss.dist::dST4(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Skew t type 5 - dST5" = function(y) gamlss.dist::dST5(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Sichel (mu as the mean) - dSICHEL" = function(y) gamlss.dist::dSICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Skew Normal Type 1 - dSN1" = function(y) gamlss.dist::dSN1(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Skew Normal Type 2 - dSN2" = function(y) gamlss.dist::dSN2(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Skew t - dSST" = function(y) gamlss.dist::dSST(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t type 1 - dST1" = function(y) gamlss.dist::dST1(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t type 2 - dST2" = function(y) gamlss.dist::dST2(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t type 3 - dST3" = function(y) gamlss.dist::dST3(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t - dST3C" = function(y) gamlss.dist::dST3C(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t type 4 - dST4" = function(y) gamlss.dist::dST4(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Skew t type 5 - dST5" = function(y) gamlss.dist::dST5(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "t-distribution - dTF" = function(y) gamlss.dist::dTF(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "t-distribution - dTF2" = function(y) gamlss.dist::dTF2(y, mu = input$location, sigma = input$scale),
-      "Waring - dWARING" = function(y) gamlss.dist::dWARING(y, mu = input$location),
+      "t-distribution - dTF2" = function(y) gamlss.dist::dTF2(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Waring - dWARING" = function(y) gamlss.dist::dWARING(y, mu = input$location, sigma = input$scale),
       "Weibull - dWEI" = function(y) gamlss.dist::dWEI(y, mu = input$location, sigma = input$scale),
       "Weibull(PH parameterization) - dWEI2" = function(y) gamlss.dist::dWEI2(y, mu = input$location, sigma = input$scale),
       "Weibull (mu as mean) - dWEI3" = function(y) gamlss.dist::dWEI3(y, mu = input$location, sigma = input$scale),
       "Yule - dYULE" = function(y) gamlss.dist::dYULE(y, mu = input$location),
-      "Zero adjusted beta binomial - dZABB" = function(y) gamlss.dist::dZABB(y, mu = input$location, sigma = input$scale, nu = input$skewness, bd = input$binomial_denominators),
-      "Zero adjusted binomial - dZABI" = function(y) gamlss.dist::dZABI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominators),
+      "Zero adjusted beta binomial - dZABB" = function(y) gamlss.dist::dZABB(y, mu = input$location, sigma = input$scale, nu = input$skewness, bd = input$binomial_denominator),
+      "Zero adjusted binomial - dZABI" = function(y) gamlss.dist::dZABI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominator),
       "Zero adjusted beta neg. bin. - dZABNB" = function(y) gamlss.dist::dZABNB(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Zero adjusted Gamma - dZAGA" = function(y) gamlss.dist::dZAGA(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Zero adjusted IG - dZAIG" = function(y) gamlss.dist::dZAIG(y, mu = input$location, sigma = input$scale),
+      "Zero adjusted IG - dZAIG" = function(y) gamlss.dist::dZAIG(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Zero adjusted logarithmic - dZALG" = function(y) gamlss.dist::dZALG(y, mu = input$location, sigma = input$scale),
       "Zero adjusted neg. bin. - dZANBI" = function(y) gamlss.dist::dZANBI(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Zero adjusted poisson - dZAP" = function(y) gamlss.dist::dZAP(y, mu = input$location, sigma = input$scale),
       "Zero adjusted PIG - dZAPIG" = function(y) gamlss.dist::dZAPIG(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Zero adjusted Sichel - dZASICHEL" = function(y) gamlss.dist::dZASICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Zero adjusted Zipf - dZAZIPF" = function(y) gamlss.dist::dZAZIPF(y, mu = input$location, sigma = input$scale),
-      "Zero inflated beta binomial - dZIBB" = function(y) gamlss.dist::dZIBB(y, mu = input$location, sigma = input$scale, nu = input$skewness, bd = input$binomial_denominators),
-      "Zero inflated binomial - dZIBI" = function(y) gamlss.dist::dZIBI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominators),
+      "Zero inflated beta binomial - dZIBB" = function(y) gamlss.dist::dZIBB(y, mu = input$location, sigma = input$scale, nu = input$skewness, bd = input$binomial_denominator),
+      "Zero inflated binomial - dZIBI" = function(y) gamlss.dist::dZIBI(y, mu = input$location, sigma = input$scale, bd = input$binomial_denominator),
       "Zero inflated beta neg. bin. - dZIBNB" = function(y) gamlss.dist::dZIBNB(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
-      "Zero inflated neg. bin. family - dZINBF" = function(y) gamlss.dist::dZINBF(y, mu = input$location, sigma = input$scale, nu = input$skewness),
+      "Zero inflated neg. bin. family - dZINBF" = function(y) gamlss.dist::dZINBF(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
       "Zero inflated neg. bin. - dZINBI" = function(y) gamlss.dist::dZINBI(y, mu = input$location, sigma = input$scale, nu = input$skewness),
       "Zero inflated poisson - dZIP" = function(y) gamlss.dist::dZIP(y, mu = input$location, sigma = input$scale),
       "Zero inf. poiss.(mu as mean) - dZIP2" = function(y) gamlss.dist::dZIP2(y, mu = input$location, sigma = input$scale),
       "Zipf - dZIPF" = function(y) gamlss.dist::dZIPF(y, mu = input$location),
       "Zero inflated PIG - dZIPIG" = function(y) gamlss.dist::dZIPIG(y, mu = input$location, sigma = input$scale, nu = input$skewness),
-      "Zero inflated Sichel - dZISICHEL" = function(y) gamlss.dist::dZISICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis),
+      "Zero inflated Sichel - dZISICHEL" = function(y) gamlss.dist::dZISICHEL(y, mu = input$location, sigma = input$scale, nu = input$skewness, tau = input$kurtosis)
 
       # default: "Normal (mean, var) - dNO2"
-      function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
+      #function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
     )
   })
-  # gamlss-functions with access of variables
+  # Density functions only for Maximum Likelihood Estimation below
   d_funct2 <- reactive({
     dist <- switch(input$dist,
                    "Beta Binomial - dBB" = gamlss.dist::dBB,
@@ -614,9 +621,9 @@ server <- function(input, output, session) {
                    "Zero inf. poiss.(mu as mean) - dZIP2" = gamlss.dist::dZIP2,
                    "Zipf - dZIPF" = gamlss.dist::dZIPF,
                    "Zero inflated PIG - dZIPIG" = gamlss.dist::dZIPIG,
-                   "Zero inflated Sichel - dZISICHEL" = gamlss.dist::dZISICHEL,
+                   "Zero inflated Sichel - dZISICHEL" = gamlss.dist::dZISICHEL
 
-                   gamlss.dist::dNO2 # default: "Normal (mean, var) - dNO2"
+                   #gamlss.dist::dNO2 # default: "Normal (mean, var) - dNO2"
     )
   })
   # maximum-likelihood-estimates for standard values
@@ -637,20 +644,24 @@ server <- function(input, output, session) {
       return()
     } else {
       # with numeric input
-      default.parameter <- c(
-        shinydistributions:::distributions[
-          shinydistributions:::distributions$dist_density == input$dist,
-          "default_location"],
-        shinydistributions:::distributions[
-          shinydistributions:::distributions$dist_density == input$dist,
-          "default_scale"],
-        shinydistributions:::distributions[
-          shinydistributions:::distributions$dist_density == input$dist,
-          "default_skewness"],
-        shinydistributions:::distributions[
-          shinydistributions:::distributions$dist_density == input$dist,
-          "default_kurtosis"]
-      )
+      default.parameter <- as.numeric(shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == input$dist,
+        c("default_location", "default_scale", "default_skewness",
+          "default_kurtosis")])
+      #default.parameter <- c(
+      #  shinydistributions:::distributions[
+      #    shinydistributions:::distributions$dist_density == input$dist,
+      #    "default_location"],
+      #  shinydistributions:::distributions[
+      #    shinydistributions:::distributions$dist_density == input$dist,
+      #    "default_scale"],
+      #  shinydistributions:::distributions[
+      #    shinydistributions:::distributions$dist_density == input$dist,
+      #    "default_skewness"],
+      #  shinydistributions:::distributions[
+      #    shinydistributions:::distributions$dist_density == input$dist,
+      #    "default_kurtosis"]
+      #)
       default.parameter[is.na(default.parameter)] <- 0
       binomial_denominator <- shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
@@ -682,37 +693,55 @@ server <- function(input, output, session) {
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
-          lower = c(
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "location_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "scale_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "skewness_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_lower_bound"]
-          ),
-          upper = c(
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "location_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "scale_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "skewness_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_upper_bound"]
-          ),
+          lower = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_lower_bound", "scale_lower_bound",
+              "skewness_lower_bound", "kurtosis_lower_bound")
+            ]),
+          upper = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_upper_bound", "scale_upper_bound",
+              "skewness_upper_bound", "kurtosis_upper_bound")
+            ]),
           method = "L-BFGS-B"
         )
         mle <- mle$par
+        #mle <- optim(
+        #  par = default.parameter,
+        #  fn = log.likelihood,
+        #  data = plot.obj$variable,
+        #  lower = c(
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "location_lower_bound"],
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "scale_lower_bound"],
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "skewness_lower_bound"],
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "kurtosis_lower_bound"]
+        #  ),
+        #  upper = c(
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "location_upper_bound"],
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "scale_upper_bound"],
+        #    shinydistributions:::distributions[
+        #      shinydistributions:::distributions$dist_density == input$dist,
+        #      "skewness_upper_bound"],
+        #    shinydistributions:::distributions[
+        #     shinydistributions:::distributions$dist_density == input$dist,
+        #      "kurtosis_upper_bound"]
+        #  ),
+        #  method = "L-BFGS-B"
+        #)
+        #mle <- mle$par
+        #mle <- default.parameter
       # functions: discrete, data: continuous
       } else if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
@@ -722,7 +751,8 @@ server <- function(input, output, session) {
           ui = "You are using continuous data with a discrete function.",
           type = "error"
         )
-        mle <- return()
+        mle <- default.parameter
+        #mle <- return()
         #mle <- default.parameter
       # function type and data type are equal
       } else {
@@ -730,34 +760,44 @@ server <- function(input, output, session) {
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
-          lower = c(
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "location_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "scale_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "skewness_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_lower_bound"]
-          ),
-          upper = c(
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "location_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "scale_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "skewness_upper_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_upper_bound"]
-          ),
+          lower = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_lower_bound", "scale_lower_bound",
+              "skewness_lower_bound", "kurtosis_lower_bound")
+          ]),
+          #lower = c(
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "location_lower_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "scale_lower_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "skewness_lower_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "kurtosis_lower_bound"]
+          #),
+          upper = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_upper_bound", "scale_upper_bound",
+              "skewness_upper_bound", "kurtosis_upper_bound")
+          ]),
+          #upper = c(
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "location_upper_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "scale_upper_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "skewness_upper_bound"],
+          #  shinydistributions:::distributions[
+          #    shinydistributions:::distributions$dist_density == input$dist,
+          #    "kurtosis_upper_bound"]
+          #),
           method = "L-BFGS-B"
         )
         mle <- mle$par
@@ -765,14 +805,10 @@ server <- function(input, output, session) {
     }
   })
   # Update parameters (location, scale, skewness, kurtosis, binomial
-  # denominators) by default values of particular density function
+  # denominator) by default values of particular density function
 
   # Location
   output$num_location <- renderUI({
-    validate(
-      need(expr = input$dist != "",
-           message = "There is no mixed density function with one parameter.")
-    )
     # without data
     if ( is.null(datasetInput()) ) {
       numericInput(
@@ -803,10 +839,6 @@ server <- function(input, output, session) {
   })
   # Scale
   output$num_scale <- renderUI({
-    validate(
-      need(expr = input$dist != "",
-           message = "")
-    )
     # Hide if scale is not a parameter of the density function
     if (is.na(shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
@@ -845,10 +877,6 @@ server <- function(input, output, session) {
   })
   # Skewness
   output$num_skewness <- renderUI({
-    validate(
-      need(expr = input$dist != "",
-           message = "")
-    )
     # Hide if skewness is not a parameter of the density function
     if (is.na(shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
@@ -887,10 +915,6 @@ server <- function(input, output, session) {
   })
   # Kurtosis
   output$num_kurtosis <- renderUI({
-    validate(
-      need(expr = input$dist != "",
-           message = "")
-    )
     # Hide if kurtosis is not a parameter of the density function
     if (is.na(shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
@@ -926,13 +950,9 @@ server <- function(input, output, session) {
       )
     }
   })
-  # Binomial denominators
-  output$num_binomial_denominators <- renderUI({
-    validate(
-      need(expr = input$dist != "",
-           message = "")
-    )
-    # Hide if binomial denominators is not a parameter of the density function
+  # Binomial denominator
+  output$num_binomial_denominator <- renderUI({
+    # Hide if Binomial denominator is not a parameter of the density function
     if (is.na(shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
       "default_binomial_denominator"])) {
@@ -942,32 +962,45 @@ server <- function(input, output, session) {
       shinydistributions:::distributions$dist_density == input$dist,
       "default_binomial_denominator"]
     numericInput(
-      inputId = "binomial_denominators",
-      label = "Binomial denominators",
+      inputId = "binomial_denominator",
+      label = "Binomial denominator",
       value = ifelse(test = input$max_x <= binomial_denominator,
                      yes = binomial_denominator, no = input$max_x),
       min = input$max_x
     )
   })
+  #### Plot ####
 
-  # Plot
-
-  # Plot Type (Histogram or Empiric Density Curve)
+  # Plot Type
+  #(Histogram or Kernel Density Estimator / Empirical Probability Function)
   output$plot_type <- renderUI({
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       return()
-    } else {
+    } else if (shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist,
+      "discrete_flag"] != 1) {
+
       selectInput(
         inputId = "plot_type",
         label = "Plot Type",
-        choices = list("Histogram", "Empiric Density Curve")
+        choices = list("Histogram",
+                       "Kernel Density Estimator"
+        )
+      )
+    } else if (shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist,
+      "discrete_flag"] == 1) {
+
+      selectInput(
+        inputId = "plot_type",
+        label = "Plot Type",
+        choices = list("Empirical Probability Function")
       )
     }
   })
-
-  # Number of Bins
+  # Number of Bins for Histogram
   output$num_bins <- renderUI({
-    if (is.null(datasetInput()) || input$plot_type == "Empiric Density Curve") {
+    if (is.null(datasetInput()) || input$plot_type != "Histogram") {
       return()
     }
     plot.obj <<- list()
@@ -976,7 +1009,7 @@ server <- function(input, output, session) {
 
     numericInput(
       inputId = "num_bins",
-      label = "Number of Bins for Histogram",
+      label = "Histogram Bins", #"Number of Bins for Histogram",
       value = nclass.Sturges(plot.obj$variable),
       min = 0
     )
@@ -991,7 +1024,7 @@ server <- function(input, output, session) {
         step = 0.1,
         value = 0.5
       )
-      # with data
+    # with data
     } else {
       plot.obj <<- list()
       plot.obj$data <<- datasetInput()
@@ -1032,7 +1065,7 @@ server <- function(input, output, session) {
             "x_upper_bound"]
         )
       )
-      # with data
+    # with data
     } else {
       plot.obj <<- list()
       plot.obj$data <<- datasetInput()
@@ -1065,7 +1098,7 @@ server <- function(input, output, session) {
             "x_lower_bound"]
         )
       )
-      # with data
+    # with data
     } else {
       plot.obj <<- list()
       plot.obj$data <<- datasetInput()
@@ -1081,34 +1114,42 @@ server <- function(input, output, session) {
       )
     }
   })
-  # Generate plot of the data
+  #### Generate plot of the data ####
   output$plot <- renderUI({
     plotOutput(outputId = "p")
-  })
 
+  })
   output$p <- renderPlot({
-    validate(
-      need(expr = input$dist != "",
-           message = ""),
-      if (!is.null(input$variable)) {
-        plot.obj <<- list()
-        plot.obj$data <<- datasetInput()
-        plot.obj$variable <<- with(data = plot.obj$data,
-                                   expr = get(input$variable))
-        need(expr = is.numeric(plot.obj$variable),
-             message = "Varible has to be numeric.")
-      }
-    )
     # Define selected distribution as "dist" for usage within renderPlot
     dist <- input$dist
 
     # Define limits of x-axis
     x.limits <- c(input$min_x, input$max_x)
 
-    # Set limits of x and y-axis
-    axes.limits <- ggplot2::coord_cartesian(xlim = x.limits,
-                                            ylim = c(0, input$max_y),
-                                            expand = FALSE)
+    # Set limits of x and y-axis (continuous)
+    axes.limits.con <- ggplot2::coord_cartesian(xlim = x.limits,
+                                                ylim = c(0, input$max_y),
+                                                expand = FALSE)
+    # Set limits of x and y-axis (discrete)
+    axes.limits.dis <- ggplot2::coord_cartesian(xlim = x.limits,
+                                                ylim = c(0, input$max_y),
+                                                expand = TRUE)
+    # Label axes (continuous, with data)
+    axes.label.con <- ggplot2::labs(
+      x = input$variable,
+      y = "Probability Density",
+      title = shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist,
+        "distribution"]
+    )
+    # Label axes (discrete, with data)
+    axes.label.dis <- ggplot2::labs(
+      x = input$variable,
+      y = "Probability",
+      title = shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == dist,
+        "distribution"]
+    )
     # ggplot theme
     .theme <- ggplot2::theme(
       axis.line = ggplot2::element_line(colour = "#000000"),
@@ -1123,44 +1164,62 @@ server <- function(input, output, session) {
       axis.title = ggplot2::element_text(size = 16, face = "bold"),
       axis.title.y = ggplot2::element_text(vjust = 4)
     )
-    # Add theoretical density curve for discrete /
-    # continuous or mixed distributions
-
-    # discrete_flag != 1:
-    # continuous or mixed (0, 2 respectively)
-    density.curve <- if (shinydistributions:::distributions[
-      shinydistributions:::distributions$dist_density == dist,
-      "discrete_flag"] != 1) {
-      ggplot2::stat_function(
-        mapping = ggplot2::aes(x = x.limits, size = "0.1"),
-        fun = d_funct(), colour = "maroon",
-        show.legend = FALSE)
-      # discrete_flag == 1: discrete
-    } else {
-      ggplot2::stat_function(
-        mapping = ggplot2::aes(x = x.limits, size = "0.1"),
-        fun = d_funct(),
-        n = (input$max_x - input$min_x + 1),
-        colour = "maroon", show.legend = FALSE)
-    }
+    # Define theoretical density (continuous)
+    theo.dens <- ggplot2::stat_function(ggplot2::aes(x = x.limits),
+                                        fun = d_funct(), n = 151,
+                                        size = 1.5, colour = "maroon"
+    )
+    # Define theoretical probability function (discrete)
+    theo.pf <- ggplot2::stat_function(ggplot2::aes(x = x.limits),
+                                      fun = d_funct(),
+                                      n = input$max_x - input$min_x + 1,
+                                      geom = "point",
+                                      size = 3, color = "maroon")
+    # Add line to theoretical probability function (discrete)
+    theo.pf.lines <- ggplot2::geom_linerange(
+      ggplot2::aes(x = seq(input$min_x, input$max_x, 1),
+                   ymax = d_funct()(y = seq(input$min_x, input$max_x, 1)),
+                   ymin = 0),
+      size = 1, colour = "maroon")
 
     ################
     # without data #
     ################
-    if (is.null(datasetInput())) {
 
+    #### discrete_flag != 1: continuous or mixed (0, 2 respectively) ####
+    if ( is.null(datasetInput()) &&
+         shinydistributions:::distributions[
+           shinydistributions:::distributions$dist_density == dist,
+           "discrete_flag"] != 1) {
       # ggplot
       ggplot2::ggplot() +
-
-        # Label axes
+        # Label axes and set limits
+        axes.limits.con +
         ggplot2::labs(x = NULL, y = "Probability Density",
                       title = shinydistributions:::distributions[
                         shinydistributions:::distributions$dist_density == dist,
                         "distribution"]) +
-        axes.limits +
         .theme +
-        # Add Theoretical Density Curve
-        density.curve
+        # Add theoretical density
+        theo.dens
+
+      #### discrete_flag == 1: discrete ####
+    } else if ( is.null(datasetInput()) &&
+                shinydistributions:::distributions[
+                  shinydistributions:::distributions$dist_density == dist,
+                  "discrete_flag"] == 1) {
+      # ggplot
+      ggplot2::ggplot() +
+        # Label axes and set limits
+        axes.limits.dis +
+        ggplot2::labs(x = NULL, y = "Probability",
+                      title = shinydistributions:::distributions[
+                        shinydistributions:::distributions$dist_density == dist,
+                        "distribution"]) +
+        .theme +
+        # Add theoretical probability function
+        theo.pf +
+        theo.pf.lines
 
       #############
       # with data #
@@ -1171,65 +1230,115 @@ server <- function(input, output, session) {
       plot.obj <<- list()
       plot.obj$data <<- datasetInput()
       plot.obj$variable <<- with(plot.obj$data, get(input$variable))
+      validate(
+        need(expr = is.numeric(plot.obj$variable),
+             message = "Input variable has to be numeric.")
+      )
+      # Create data frame containing relative frequencies for discrete case
+      df <- data.frame(prop.table(table(plot.obj$variable)))
+      # Convert input variable (Var1) from factor to integer (=Var2)
+      Var2 <- as.integer(levels(df$Var1))[df$Var1]
 
-      # Use selected plot type (histogram or empiric density curve)
-      # colourblindfriendly colours
+      # Use selected plot type (histogram or kernel density estimator/
+      # empirical probability function)
       plot_type <- switch (
         EXPR = input$plot_type,
-        "Histogram" = ggplot2::geom_histogram(
-          mapping = ggplot2::aes(x = plot.obj$variable, y = ..density..),
-          data = plot.obj$data,
-          alpha = 0.5,
-          bins = input$num_bins,
-          colour = "#000000",
-          fill = "#56B4E9"
-        ),
-        "Empiric Density Curve" = ggplot2::geom_density(
-          mapping = ggplot2::aes(x = plot.obj$variable),
-          data = plot.obj$data,
-          alpha = 0.5,
-          colour = "#000000",
-          fill = "#56B4E9"
-        )
+        #### Continuous/mixed distributions ####
+        "Histogram" = ggplot2::ggplot() +
+          ggplot2::geom_histogram(
+            mapping = ggplot2::aes(x = plot.obj$variable, y = ..density..),
+            data = plot.obj$data,
+            alpha = 0.5,
+            bins = input$num_bins,
+            colour = "#000000",
+            fill = "#56B4E9"
+          ) +
+          # Add theoretical density
+          theo.dens +
+          # Label axes and set limits
+          axes.limits.con +
+          axes.label.con,
+
+        "Kernel Density Estimator" = ggplot2::ggplot() +
+          ggplot2::geom_density(
+            mapping = ggplot2::aes(x = plot.obj$variable),
+            data = plot.obj$data,
+            alpha = 0.5,
+            colour = "#000000",
+            fill = "#56B4E9"
+          ) +
+          # Add theoretical density
+          theo.dens +
+          # Label axes and set limits
+          axes.limits.con +
+          axes.label.con,
+
+        #### Discrete distributions ####
+        "Empirical Probability Function" = ggplot2::ggplot() +
+          ggplot2::geom_point(data = df, ggplot2::aes(x = Var2, y = Freq),
+                              size = 3.5, colour = "#56B4E9") +
+          ggplot2::geom_linerange(data = df,
+                                  ggplot2::aes(x = Var2, ymax = Freq, ymin = 0),
+                                  size = 1.5, colour = "#56B4E9") +
+          # Add theoretical probability function
+          theo.pf +
+          theo.pf.lines +
+          # Label axes and set limits
+          axes.limits.dis +
+          axes.label.dis
       )
-      # ggplot
-      ggplot2::ggplot() +
-
-        # Add Histogramm or Empiric Density Curve
-        plot_type +
-
-        # Label axes
-        ggplot2::labs(x = input$variable, y = "Probability Density",
-                      title = shinydistributions:::distributions[
-                        shinydistributions:::distributions$dist_density == dist,
-                        "distribution"]) +
-        axes.limits +
-        .theme +
-        # Add Theoretical Density Curve
-        density.curve
-
+      # Plot Histogramm or Kernel Density Estimator and theoretical density or
+      # Empirical and Theoretical Probability Functions
+      plot_type +
+        .theme
     }
   })
-  # Headline above plot dependent on plot type (histogram or empiric density)
+  # Headline above plot dependent on plot type and distribution type
   output$caption <- renderText({
     # without data
-    if (is.null(datasetInput())) {
-      "Theoretic Density Curve"
+    if (is.null(datasetInput()) &&
+        shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "discrete_flag"] != 1) {
+      "Theoretical Density"
+    } else if (is.null(datasetInput()) &&
+               shinydistributions:::distributions[
+                 shinydistributions:::distributions$dist_density == input$dist,
+                 "discrete_flag"] == 1) {
+      "Theoretical Probability Function"
+
       # with data
-    } else {
+    } else if (shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist,
+      "discrete_flag"] != 1) {
       switch(EXPR = input$plot_type,
-             "Histogram" = "Histogram of Data and Theoretic Density Curve",
-             "Empiric Density Curve" = "Empiric and Theoretic Densities")
+             "Histogram" = "Histogram of Data and Theoretical Density",
+             "Kernel Density Estimator" =
+               "Kernel Density Estimator and Theoretical Density"
+      )
+    } else if (shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist,
+      "discrete_flag"] == 1) {
+      switch(EXPR = input$plot_type,
+             "Empirical Probability Function" =
+               "Empirical and Theoretical Probability Functions")
     }
   })
-  # Info text on main panel below plot
+  #### Info text on main panel below plot ####
 
-  # Default Parameter(s) of Theoretic Density Function
+  # Headline Default Parameter(s) of Theoretical Density / Probability Function
+  output$head_default_parameters <- renderText({
+    if (shinydistributions:::distributions[
+      shinydistributions:::distributions$dist_density == input$dist,
+      "discrete_flag"] != 1 ) {
+
+      "Default Parameter(s) of Theoretical Density Function:"
+    } else {
+      "Default Parameter(s) of Theoretical Probability Function:"
+    }
+  })
+  # Values of Default Parameter(s) of Theoretical Density / Probability Function
   output$info_text <- renderText({
-    validate(
-      need(expr = input$dist != "",
-           message = "")
-    )
     dist <- input$dist
 
     paste(
@@ -1257,7 +1366,7 @@ server <- function(input, output, session) {
       ifelse(is.na(shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == dist,
         "default_binomial_denominator"]), '',
-        paste("; Binomial denominators = ", shinydistributions:::distributions[
+        paste("; Binomial denominator = ", shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == dist,
           "default_binomial_denominator"], sep = '')),
       sep = '')

@@ -720,7 +720,6 @@ server <- function(input, output, session) {
             c("location_upper_bound", "scale_upper_bound",
               "skewness_upper_bound", "kurtosis_upper_bound")
             ]),
-
           method = "L-BFGS-B"
         )
         mle <- mle$par

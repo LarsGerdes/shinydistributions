@@ -194,8 +194,8 @@ server <- function(input, output, session) {
     } else {
 
       if (input$display == "Data Frame") {
-        # Selected number of records shown per page (range to chose from
-        # dependent on data set size)
+        # Selected number of records shown per page (range to chose from dependent
+        # on data set size)
         page_length <-  if (nrow(datasetInput()) > 100){
           c(10, 15, 20, 50, 100, nrow(datasetInput()) )
           } else if (nrow(datasetInput()) <= 10) {
@@ -648,26 +648,13 @@ server <- function(input, output, session) {
         shinydistributions:::distributions$dist_density == input$dist,
         c("default_location", "default_scale", "default_skewness",
           "default_kurtosis")])
-      #default.parameter <- c(
-      #  shinydistributions:::distributions[
-      #    shinydistributions:::distributions$dist_density == input$dist,
-      #    "default_location"],
-      #  shinydistributions:::distributions[
-      #    shinydistributions:::distributions$dist_density == input$dist,
-      #    "default_scale"],
-      #  shinydistributions:::distributions[
-      #    shinydistributions:::distributions$dist_density == input$dist,
-      #    "default_skewness"],
-      #  shinydistributions:::distributions[
-      #    shinydistributions:::distributions$dist_density == input$dist,
-      #    "default_kurtosis"]
-      #)
       default.parameter[is.na(default.parameter)] <- 0
       binomial_denominator <- shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "default_binomial_denominator"]
+      # Compute log-likelihood
       log.likelihood <- function(parameter, data) {
-        -sum(R.utils::doCall(
+        sum(R.utils::doCall(
           d_funct2(),
           x = data,
           log = TRUE,
@@ -683,7 +670,7 @@ server <- function(input, output, session) {
       if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "discrete_flag"] == 0) && all(plot.obj$variable %% 1 == 0)) {
-      #  (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
+        #  (length(unique(plot.obj$variable))/length(plot.obj$variable) <= 0.1)) {
         showNotification(
           ui = "Input variable is considered as discrete while using a
           continuous function.",
@@ -706,55 +693,18 @@ server <- function(input, output, session) {
           method = "L-BFGS-B"
         )
         mle <- mle$par
-        #mle <- optim(
-        #  par = default.parameter,
-        #  fn = log.likelihood,
-        #  data = plot.obj$variable,
-        #  lower = c(
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "location_lower_bound"],
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "scale_lower_bound"],
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "skewness_lower_bound"],
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "kurtosis_lower_bound"]
-        #  ),
-        #  upper = c(
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "location_upper_bound"],
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "scale_upper_bound"],
-        #    shinydistributions:::distributions[
-        #      shinydistributions:::distributions$dist_density == input$dist,
-        #      "skewness_upper_bound"],
-        #    shinydistributions:::distributions[
-        #     shinydistributions:::distributions$dist_density == input$dist,
-        #      "kurtosis_upper_bound"]
-        #  ),
-        #  method = "L-BFGS-B"
-        #)
-        #mle <- mle$par
-        #mle <- default.parameter
-      # functions: discrete, data: continuous
+        # functions: discrete, data: continuous
       } else if ((shinydistributions:::distributions[
         shinydistributions:::distributions$dist_density == input$dist,
         "discrete_flag"] == 1) && any(plot.obj$variable %% 1 != 0)) {
-      # (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
+        # (length(unique(plot.obj$variable)) / length(plot.obj$variable) > 0.1)) {
         showNotification(
           ui = "You are using continuous data with a discrete function.",
           type = "error"
         )
-        mle <- default.parameter
-        #mle <- return()
+        mle <- return()
         #mle <- default.parameter
-      # function type and data type are equal
+        # function type and data type are equal
       } else {
         mle <- optim(
           par = default.parameter,
@@ -764,40 +714,13 @@ server <- function(input, output, session) {
             shinydistributions:::distributions$dist_density == input$dist,
             c("location_lower_bound", "scale_lower_bound",
               "skewness_lower_bound", "kurtosis_lower_bound")
-          ]),
-          #lower = c(
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "location_lower_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "scale_lower_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "skewness_lower_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "kurtosis_lower_bound"]
-          #),
+            ]),
           upper = as.numeric(shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             c("location_upper_bound", "scale_upper_bound",
               "skewness_upper_bound", "kurtosis_upper_bound")
-          ]),
-          #upper = c(
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "location_upper_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "scale_upper_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "skewness_upper_bound"],
-          #  shinydistributions:::distributions[
-          #    shinydistributions:::distributions$dist_density == input$dist,
-          #    "kurtosis_upper_bound"]
-          #),
+            ]),
+
           method = "L-BFGS-B"
         )
         mle <- mle$par
@@ -961,11 +884,16 @@ server <- function(input, output, session) {
     binomial_denominator <- shinydistributions:::distributions[
       shinydistributions:::distributions$dist_density == input$dist,
       "default_binomial_denominator"]
+
     numericInput(
       inputId = "binomial_denominator",
       label = "Binomial denominator",
-      value = ifelse(test = input$max_x <= binomial_denominator,
-                     yes = binomial_denominator, no = input$max_x),
+      value = if (is.na(binomial_denominator)) {
+        binomial_denominator
+      } else if (!is.na(binomial_denominator)) {
+        ifelse(input$max_x <= binomial_denominator,
+               yes = binomial_denominator, no = input$max_x)
+      },
       min = input$max_x
     )
   })
@@ -1234,11 +1162,16 @@ server <- function(input, output, session) {
         need(expr = is.numeric(plot.obj$variable),
              message = "Input variable has to be numeric.")
       )
-      # Create data frame containing relative frequencies for discrete case
-      df <- data.frame(prop.table(table(plot.obj$variable)))
-      # Convert input variable (Var1) from factor to integer (=Var2)
-      Var2 <- as.integer(levels(df$Var1))[df$Var1]
+      # Discrete variable and function
+      # Create data frame containing relative frequencies of variable
+      if ((shinydistributions:::distributions[
+        shinydistributions:::distributions$dist_density == input$dist,
+        "discrete_flag"] == 1) && any(plot.obj$variable %% 1 == 0)) {
 
+        df <- data.frame(prop.table(table(plot.obj$variable)))
+        # Convert input variable (Var1) from factor to integer (=Var2)
+        Var2 <- as.integer(levels(df$Var1))[df$Var1]
+      }
       # Use selected plot type (histogram or kernel density estimator/
       # empirical probability function)
       plot_type <- switch (
@@ -1274,18 +1207,23 @@ server <- function(input, output, session) {
           axes.label.con,
 
         #### Discrete distributions ####
-        "Empirical Probability Function" = ggplot2::ggplot() +
-          ggplot2::geom_point(data = df, ggplot2::aes(x = Var2, y = Freq),
-                              size = 3.5, colour = "#56B4E9") +
-          ggplot2::geom_linerange(data = df,
-                                  ggplot2::aes(x = Var2, ymax = Freq, ymin = 0),
-                                  size = 1.5, colour = "#56B4E9") +
-          # Add theoretical probability function
-          theo.pf +
-          theo.pf.lines +
-          # Label axes and set limits
-          axes.limits.dis +
-          axes.label.dis
+        # Do not run plot if variable is continuous
+        "Empirical Probability Function" = if(any(plot.obj$variable %% 1 != 0)){
+          return()
+        } else {
+          ggplot2::ggplot() +
+            ggplot2::geom_point(data = df, ggplot2::aes(x = Var2, y = Freq),
+                                size = 3.5, colour = "#56B4E9") +
+            ggplot2::geom_linerange(data = df,
+                                    ggplot2::aes(x = Var2, ymax = Freq, ymin = 0),
+                                    size = 1.5, colour = "#56B4E9") +
+            # Add theoretical probability function
+            theo.pf +
+            theo.pf.lines +
+            # Label axes and set limits
+            axes.limits.dis +
+            axes.label.dis
+        }
       )
       # Plot Histogramm or Kernel Density Estimator and theoretical density or
       # Empirical and Theoretical Probability Functions

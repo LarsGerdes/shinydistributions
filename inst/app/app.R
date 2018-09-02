@@ -94,7 +94,7 @@ ui <- fluidPage(
           # Input: Select separator
           radioButtons(
             inputId = "sep",
-            label = "Seperator",
+            label = "Separator",
             choices = c(Comma = ",", Semicolon = ";", Tab = "\t"),
             selected = ","
           ),
@@ -511,7 +511,7 @@ server <- function(input, output, session) {
       #function(y) gamlss.dist::dNO2(y, mu = input$location, sigma = input$scale)
     )
   })
-  # Quantile function to estimate lower and upper bounds (without data)
+  # Quantile functions to estimate lower and upper bounds (without data)
   q_funct <- reactive({
     dist <- switch(input$dist,
                    "Beta Binomial - dBB" = gamlss.dist::qBB,
@@ -757,6 +757,8 @@ server <- function(input, output, session) {
       # without numeric input
     } else if (!is.numeric(plot.obj$variable)) {
       return()
+    } else if (input$dist == "Reverse generalized extreme - dRGE") {
+      return()  
     } else {
       # with numeric input
       default.parameter <- as.numeric(shinydistributions:::distributions[
@@ -804,9 +806,13 @@ server <- function(input, output, session) {
             shinydistributions:::distributions[
               shinydistributions:::distributions$dist_density == input$dist,
               "skewness_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_lower_bound"]
+            if (input$dist == "Normal Exponential t - dNET") {
+              input$skewness
+            } else {
+              shinydistributions:::distributions[
+                shinydistributions:::distributions$dist_density == input$dist,
+                "kurtosis_lower_bound"]
+            }
           ),
           upper = c(
             shinydistributions:::distributions[
@@ -852,9 +858,13 @@ server <- function(input, output, session) {
             shinydistributions:::distributions[
               shinydistributions:::distributions$dist_density == input$dist,
               "skewness_lower_bound"],
-            shinydistributions:::distributions[
-              shinydistributions:::distributions$dist_density == input$dist,
-              "kurtosis_lower_bound"]
+            if (input$dist == "Normal Exponential t - dNET") {
+              input$skewness
+            } else {
+              shinydistributions:::distributions[
+                shinydistributions:::distributions$dist_density == input$dist,
+                "kurtosis_lower_bound"]
+            }
           ),
           upper = c(
             shinydistributions:::distributions[
@@ -882,13 +892,21 @@ server <- function(input, output, session) {
   # Location
   output$num_location <- renderUI({
     # without data
-    if ( is.null(datasetInput()) ) {
+    if (is.null(datasetInput())) {
       numericInput(
         inputId = "location",
         label = "Location",
         value = shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
-          "default_location"]
+          "default_location"],
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "location_lower_bound"
+        ],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "location_upper_bound"
+        ]
       )
       # with data
     } else {
@@ -904,8 +922,20 @@ server <- function(input, output, session) {
           yes = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "default_location"],
-          no = round(mle()[1], digits = 2)
-        )
+          no = if (mle()[1] >= 0.1) {
+            round(mle()[1], digits = 2)
+          } else {
+            mle()[1]
+          }
+        ),
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "location_lower_bound"
+        ],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "location_upper_bound"
+        ]
       )
     }
   })
@@ -925,7 +955,13 @@ server <- function(input, output, session) {
         value = shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
                                                    "default_scale"],
-        step = 0.1
+        step = 0.1,
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "scale_lower_bound"],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "scale_upper_bound"]
       )
       # with data
     } else {
@@ -941,9 +977,19 @@ server <- function(input, output, session) {
           yes = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "default_scale"],
-          no = round(mle()[2], digits = 2)
+          no = if (mle()[2] >= 0.1) {
+            round(mle()[2], digits = 2)
+          } else {
+            mle()[2]
+          }
         ),
-        step = 0.1
+        step = 0.1,
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "scale_lower_bound"],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "scale_upper_bound"]
       )
     }
   })
@@ -962,7 +1008,14 @@ server <- function(input, output, session) {
         label = "Skewness",
         value = shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
-          "default_skewness"]
+          "default_skewness"],
+        step = 0.1,
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "skewness_lower_bound"],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "skewness_upper_bound"]
       )
       # with data
     } else {
@@ -979,9 +1032,19 @@ server <- function(input, output, session) {
           yes = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "default_skewness"],
-          no = round(mle()[3], digits = 2)
+          no = if (mle()[3] >= 0.1) {
+            round(mle()[3], digits = 2)
+          } else {
+            mle()[3]
+          }
         ),
-        step = 0.1
+        step = 0.1,
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "skewness_lower_bound"],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "skewness_upper_bound"]
       )
     }
   })
@@ -1000,7 +1063,18 @@ server <- function(input, output, session) {
         label = "Kurtosis",
         value = shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
-          "default_kurtosis"]
+          "default_kurtosis"],
+        step = 0.1,
+        min = if (input$dist == "Normal Exponential t - dNET") {
+          input$skewness
+        } else {
+          shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "kurtosis_lower_bound"]
+        },
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "kurtosis_upper_bound"]
       )
       # with data
     } else {
@@ -1016,9 +1090,19 @@ server <- function(input, output, session) {
           yes = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "default_kurtosis"],
-          no = round(mle()[4], digits = 2)
+          no = if (mle()[4] >= 0.1) {
+            round(mle()[4], digits = 2)
+          } else {
+            mle()[4]
+          }
         ),
-        step = 0.1
+        step = 0.1,
+        min = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "kurtosis_lower_bound"],
+        max = shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "kurtosis_upper_bound"]
       )
     }
   })
@@ -1107,9 +1191,11 @@ server <- function(input, output, session) {
       plot.obj$data <<- datasetInput()
       plot.obj$variable <<- with(data = plot.obj$data,
                                  expr = get(input$variable))
+      # Check for non-numeric input
       validate(
         need(expr = is.numeric(plot.obj$variable), message = "")
       )
+      # Calculate maximum of kernel density
       density <- density(plot.obj$variable)
       max.density <- max(density$y)
 
@@ -1117,10 +1203,24 @@ server <- function(input, output, session) {
         inputId = "max_y",
         label = "Maximum of Y-axis",
         step = 0.1,
-        value = if (max.density + max.density*0.3 >= 0.1) {
-          round(x = max.density + max.density*0.3, digits = 2)
-        } else {
-          max.density + max.density*0.3
+        value = if (shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "discrete_flag"] != 1) {
+          
+          if (max.density + max.density*0.3 >= 0.1) {
+              round(x = max.density + max.density*0.3, digits = 2)
+          } else {
+            # Do not round values < 0.1
+            max.density + max.density*0.3
+          }
+          # Discrete variable and function
+          # Create data frame containing relative frequencies of variable
+        } else if ((shinydistributions:::distributions[
+          shinydistributions:::distributions$dist_density == input$dist,
+          "discrete_flag"] == 1) && any(plot.obj$variable %% 1 == 0)) {
+          
+          # Max y value of relative frequencies
+          max(data.frame(prop.table(table(plot.obj$variable)))$Freq)
         }
       )
     }
@@ -1132,15 +1232,19 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "max_x",
         label = "Maximum of X-axis",
-        value = ifelse(
+        value = if (input$dist == "Normal Exponential t - dNET") {
+          5 # 'qNET' is not an exported object from 'namespace:gamlss.dist'
+        } else {
+          ifelse(
           test = is.na(shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_upper_bound"]),
-          yes = 5,
+          yes = q_funct()(p = 0.999), #5,
           no = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_upper_bound"]
         )
+      }
       )
     # with data
     } else {
@@ -1165,11 +1269,24 @@ server <- function(input, output, session) {
       numericInput(
         inputId = "min_x",
         label = "Minimum of X-axis",
-        value = ifelse(
-          test = is.na(shinydistributions:::distributions[
+        value = if (input$dist == "Normal Exponential t - dNET") {
+          -5 # 'qNET' is not an exported object from 'namespace:gamlss.dist'
+        } else if (input$dist == "Reverse generalized extreme - dRGE") {
+          input$location - (input$scale / input$skewness)
+        } else {
+          ifelse(
+            test = is.na(shinydistributions:::distributions[
+              shinydistributions:::distributions$dist_density == input$dist,
+              "x_lower_bound"]),
+            yes = q_funct()(p = 0.001),
+            no = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
-            "x_lower_bound"]),
-          yes = -5,
+            "x_lower_bound"]
+          )
+        },
+        min = ifelse(
+          test = input$dist == "Reverse generalized extreme - dRGE",
+          yes = (input$location - (input$scale / input$skewness)),
           no = shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             "x_lower_bound"]
@@ -1241,7 +1358,7 @@ server <- function(input, output, session) {
       axis.title = ggplot2::element_text(size = 16, face = "bold"),
       axis.title.y = ggplot2::element_text(vjust = 4)
     )
-    # Define theoretical density (continuous)
+    # Define theoretical density (continuous / mixed)
     theo.dens <- ggplot2::stat_function(ggplot2::aes(x = x.limits),
                                         fun = d_funct(), n = 151,
                                         size = 1.5, colour = "maroon"

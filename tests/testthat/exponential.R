@@ -1,7 +1,7 @@
 testthat::context("exponential")
 
 #open shiny app
-app <- shinytest::ShinyDriver$new(path = "inst/app")
+app <- shinytest::ShinyDriver$new("inst/app")
 
 testthat::test_that("exponential", {
   #set numeric input
@@ -14,6 +14,3 @@ testthat::test_that("exponential", {
 
 #stop shiny app
 app$stop()
-
-testthat::test_check("shinydistributions")
-

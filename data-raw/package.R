@@ -8,7 +8,10 @@ devtools::has_devel()
 # Tests
 usethis::use_testthat()
 # for unit tests with shiny
+install.packages("shinytest")
+shinytest::dependenciesInstalled()
 shinytest::installDependencies()
+
 
 devtools::document()
 devtools::check()

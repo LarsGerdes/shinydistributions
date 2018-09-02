@@ -1,0 +1,106 @@
+{
+  "input": {
+    "dataset": null,
+    "display": "Data Frame",
+    "dist": "Normal (mean, var) - dNO2",
+    "fun_type": "all",
+    "header": true,
+    "location": 0.5,
+    "max_x": 10,
+    "max_y": 0.5,
+    "min_x": 0,
+    "parameters": "all",
+    "quote": "\"",
+    "r_dataset": "None",
+    "reset": 0,
+    "scale": 1,
+    "sep": ","
+  },
+  "output": {
+    "caption": "Theoretical Density",
+    "head_default_parameters": "Default Parameter(s) of Theoretical Density Function:",
+    "head_ml_estimates": "",
+    "info_text": "Location = 0; Scale = 1",
+    "info_text2": "",
+    "num_binomial_denominator": null,
+    "num_bins": null,
+    "num_kurtosis": null,
+    "num_location": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label for=\"location\">Location<\/label>\n  <input id=\"location\" type=\"number\" class=\"form-control\" value=\"0\"/>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "num_max_x": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label for=\"max_x\">Maximum of X-axis<\/label>\n  <input id=\"max_x\" type=\"number\" class=\"form-control\" value=\"3.09023230616781\"/>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "num_max_y": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label for=\"max_y\">Maximum of Y-axis<\/label>\n  <input id=\"max_y\" type=\"number\" class=\"form-control\" value=\"0.5\" step=\"0.1\"/>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "num_min_x": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label for=\"min_x\">Minimum of X-axis<\/label>\n  <input id=\"min_x\" type=\"number\" class=\"form-control\" value=\"-3.09023230616781\"/>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "num_scale": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label for=\"scale\">Scale<\/label>\n  <input id=\"scale\" type=\"number\" class=\"form-control\" value=\"1\" min=\"1e-10\" step=\"0.1\"/>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "num_skewness": null,
+    "p": {
+      "src": "[image data sha1: 0712fea22332520643e41436568a71db3821a116]",
+      "width": 631,
+      "height": 400,
+      "coordmap": [
+        {
+          "panel": 1,
+          "row": 1,
+          "col": 1,
+          "panel_vars": {
+
+          },
+          "log": {
+            "x": null,
+            "y": null
+          },
+          "domain": {
+            "left": 0,
+            "right": 10,
+            "bottom": 0,
+            "top": 0.5
+          },
+          "mapping": {
+            "y": null,
+            "x": "x.limits"
+          },
+          "range": {
+            "left": 46.1506776176107,
+            "right": 625.520448813581,
+            "bottom": 376.58894694863,
+            "top": 31.958896119863
+          }
+        }
+      ]
+    },
+    "plot": {
+      "html": "<div id=\"p\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 400px\"><\/div>",
+      "deps": [
+
+      ]
+    },
+    "plot_type": null,
+    "variable": null
+  },
+  "export": {
+
+  }
+}

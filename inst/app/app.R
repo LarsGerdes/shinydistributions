@@ -758,7 +758,7 @@ server <- function(input, output, session) {
     } else if (!is.numeric(plot.obj$variable)) {
       return()
     } else if (input$dist == "Reverse generalized extreme - dRGE") {
-      return()  
+      return()
     } else {
       # with numeric input
       default.parameter <- as.numeric(shinydistributions:::distributions[
@@ -848,7 +848,6 @@ server <- function(input, output, session) {
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
-<<<<<<< HEAD
           lower = c(
             shinydistributions:::distributions[
               shinydistributions:::distributions$dist_density == input$dist,
@@ -881,7 +880,6 @@ server <- function(input, output, session) {
               shinydistributions:::distributions$dist_density == input$dist,
               "kurtosis_upper_bound"]
           ),
-=======
           lower = as.numeric(shinydistributions:::distributions[
             shinydistributions:::distributions$dist_density == input$dist,
             c("location_lower_bound", "scale_lower_bound",
@@ -892,7 +890,6 @@ server <- function(input, output, session) {
             c("location_upper_bound", "scale_upper_bound",
               "skewness_upper_bound", "kurtosis_upper_bound")
             ]),
->>>>>>> master
           method = "L-BFGS-B"
         )
         mle <- mle$par
@@ -1219,7 +1216,7 @@ server <- function(input, output, session) {
         value = if (shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
           "discrete_flag"] != 1) {
-          
+
           if (max.density + max.density*0.3 >= 0.1) {
               round(x = max.density + max.density*0.3, digits = 2)
           } else {
@@ -1231,7 +1228,7 @@ server <- function(input, output, session) {
         } else if ((shinydistributions:::distributions[
           shinydistributions:::distributions$dist_density == input$dist,
           "discrete_flag"] == 1) && any(plot.obj$variable %% 1 == 0)) {
-          
+
           # Max y value of relative frequencies
           max(data.frame(prop.table(table(plot.obj$variable)))$Freq)
         }

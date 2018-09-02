@@ -848,6 +848,7 @@ server <- function(input, output, session) {
           par = default.parameter,
           fn = log.likelihood,
           data = plot.obj$variable,
+<<<<<<< HEAD
           lower = c(
             shinydistributions:::distributions[
               shinydistributions:::distributions$dist_density == input$dist,
@@ -880,6 +881,18 @@ server <- function(input, output, session) {
               shinydistributions:::distributions$dist_density == input$dist,
               "kurtosis_upper_bound"]
           ),
+=======
+          lower = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_lower_bound", "scale_lower_bound",
+              "skewness_lower_bound", "kurtosis_lower_bound")
+            ]),
+          upper = as.numeric(shinydistributions:::distributions[
+            shinydistributions:::distributions$dist_density == input$dist,
+            c("location_upper_bound", "scale_upper_bound",
+              "skewness_upper_bound", "kurtosis_upper_bound")
+            ]),
+>>>>>>> master
           method = "L-BFGS-B"
         )
         mle <- mle$par

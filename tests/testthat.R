@@ -1,5 +1,5 @@
 testthat::context("exponential")
-
+library(shiny)
 #open shiny app
 app <- shinytest::ShinyDriver$new(path = "inst/app")
 

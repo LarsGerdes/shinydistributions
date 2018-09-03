@@ -1,0 +1,115 @@
+distribution;density_fun;dist_density;no_of_parameters
+Beta Binomial;dBB;Beta Binomial - dBB;2
+Box-Cox Cole and Green;dBCCG;Box-Cox Cole and Green - dBCCG;3
+Box-Cox Cole and Green;dBCCGo;Box-Cox Cole and Green - dBCCGo;NA
+Box-Cox Power Exponential;dBCPE;Box-Cox Power Exponential - dBCPE;4
+Box-Cox Power Exponential;dBCPEo;Box-Cox Power Exponential - dBCPEo;NA
+Box-Cox-t;dBCT;Box-Cox-t - dBCT;4
+Box-Cox-t;dBCTo;Box-Cox-t - dBCTo;NA
+Beta;dBE;Beta - dBE;2
+Beta inflated;dBEINF;Beta inflated - dBEINF;4
+Beta inflated;dBEINF0;Beta inflated - dBEINF0;NA
+Beta inflated;dBEINF1;Beta inflated - dBEINF1;NA
+Beta;dBEo;Beta - dBEo;NA
+Beta one inflated;dBEOI;Beta one inflated - dBEOI;3
+Beta zero inflated;dBEZI;Beta zero inflated - dBEZI;3
+Binomial;dBI;Binomial - dBI;1
+Beta negative binomial;dBNB;Beta negative binomial - dBNB;3
+Double binomial;dDBI;Double binomial - dDBI;2
+Delaport;dDEL;Delaport - dDEL;3
+Double Poisson;dDPO;Double Poisson - dDPO;2
+Exponential generalized Beta type 2;dEGB2;Exponential generalized Beta type 2 - dEGB2;4
+Exponential Gaussian;dexGAUS;Exponential Gaussian - dexGAUS;3
+Exponential;dEXP;Exponential - dEXP;1
+Gamma;dGA;Gamma - dGA;2
+Generalized Beta type 1;dGB1;Generalized Beta type 1 - dGB1;4
+Generalized Beta type 2;dGB2;Generalized Beta type 2 - dGB2;4
+Geometric;dGEOM;Geometric - dGEOM;1
+Geometric (original);dGEOMo;Geometric (original) - dGEOMo;1
+Generalized Gamma;dGG;Generalized Gamma - dGG;3
+Generalized Inverse Gaussian;dGIG;Generalized Inverse Gaussian - dGIG;3
+Generalised Pareto;dGP;Generalised Pareto - dGP;NA
+Generalised Pareto;dGPO;Generalised Pareto - dGPO;NA
+Generalized t;dGT;Generalized t - dGT;4
+Gumbel;dGU;Gumbel - dGU;2
+Inverse Gaussian;dIG;Inverse Gaussian - dIG;2
+Inverse Gamma;dIGAMMA;Inverse Gamma - dIGAMMA;2
+Johnson's SU;dJSU;Johnson's SU - dJSU;4
+Johnson's SU;dJSUo;Johnson's SU - dJSUo;NA
+Logarithmic;dLG;Logarithmic - dLG;1
+log-Normal (Box-Cox);dLNO;log-Normal (Box-Cox) - dLNO;3
+Logistic;dLO;Logistic - dLO;2
+Logit Normal;dLOGITNO;Logit Normal - dLOGITNO;NA
+log-Normal;dLOGNO;log-Normal - dLOGNO;2
+log-Normal;dLOGNO2;log-Normal - dLOGNO2;NA
+Normal Linear Quadratic;dLQNO;Normal Linear Quadratic - dLQNO;2
+Multinomial;dMN3;Multinomial - dMN3;NA
+Multinomial;dMN4;Multinomial - dMN4;NA
+Multinomial;dMN5;Multinomial - dMN5;NA
+Negative Binomial family;dNBF;Negative Binomial family - dNBF;3
+Negative Binomial type I;dNBI;Negative Binomial type I - dNBI;2
+Negative Binomial type II;dNBII;Negative Binomial type II - dNBII;2
+Normal Exponential t;dNET;Normal Exponential t - dNET;4
+Normal (mean, sd);dNO;Normal (mean, sd) - dNO;2
+Normal (mean, var);dNO2;Normal (mean, var) - dNO2;2
+Normal Family;dNOF;Normal Family - dNOF;3
+Pareto type 2;dPARETO2;Pareto type 2 - dPARETO2;2
+Pareto type 2 original;dPARETO2o;Pareto type 2 original - dPARETO2o;2
+Power Exponential;dPE;Power Exponential - dPE;3
+Power Exponential type 2;dPE2;Power Exponential type 2 - dPE2;3
+Poisson inverse Gaussian;dPIG;Poisson inverse Gaussian - dPIG;2
+Poison;dPO;Poison - dPO;1
+Reverse Gumbel;dRG;Reverse Gumbel - dRG;2
+Reverse generalized extreme;dRGE;Reverse generalized extreme - dRGE;3
+Skew Power Exponential;dSEP;Skew Power Exponential - dSEP;NA
+Skew Power Exponential type 1;dSEP1;Skew Power Exponential type 1 - dSEP1;4
+Skew Power Exponential type 2;dSEP2;Skew Power Exponential type 2 - dSEP2;4
+Skew Power Exponential type 3;dSEP3;Skew Power Exponential type 3 - dSEP3;4
+Skew Power Exponential type 4;dSEP4;Skew Power Exponential type 4 - dSEP4;4
+Shash;dSHASH;Shash - dSHASH;4
+Shash original;dSHASHo;Shash original - dSHASHo;4
+Shash original 2;dSHASHo2;Shash original 2 - dSHASHo2;4
+Sichel (original);dSI;Sichel (original) - dSI;3
+Sichel (mu as the mean);dSICHEL;Sichel (mu as the mean) - dSICHEL;3
+Skew Normal Type 1;dSN1;Skew Normal Type 1 - dSN1;NA
+Skew Normal Type 2;dSN2;Skew Normal Type 2 - dSN2;NA
+Skew t;dSST;Skew t - dSST;NA
+Skew t type 1;dST1;Skew t type 1 - dST1;3
+Skew t type 2;dST2;Skew t type 2 - dST2;3
+Skew t type 3;dST3;Skew t type 3 - dST3;3
+Skew t;dST3C;Skew t - dST3C;NA
+Skew t type 4;dST4;Skew t type 4 - dST4;3
+Skew t type 5;dST5;Skew t type 5 - dST5;3
+t-distribution;dTF;t-distribution - dTF;3
+t-distribution;dTF2;t-distribution - dTF2;NA
+Waring;dWARING;Waring - dWARING;1
+Weibull;dWEI;Weibull - dWEI;2
+Weibull(PH parameterization);dWEI2;Weibull(PH parameterization) - dWEI2;2
+Weibull (mu as mean);dWEI3;Weibull (mu as mean) - dWEI3;2
+Yule;dYULE;Yule - dYULE;1
+Zero adjusted beta binomial;dZABB;Zero adjusted beta binomial - dZABB;NA
+Zero adjusted binomial;dZABI;Zero adjusted binomial - dZABI;2
+Zero adjusted beta neg. bin.;dZABNB;Zero adjusted beta neg. bin. - dZABNB;4
+Zero adjusted Gamma;dZAGA;Zero adjusted Gamma - dZAGA;NA
+Zero adjusted IG;dZAIG;Zero adjusted IG - dZAIG;2
+Zero adjusted logarithmic;dZALG;Zero adjusted logarithmic - dZALG;2
+Zero adjusted neg. bin.;dZANBI;Zero adjusted neg. bin. - dZANBI;3
+Zero adjusted poisson;dZAP;Zero adjusted poisson - dZAP;2
+Zero adjusted PIG;dZAPIG;Zero adjusted PIG - dZAPIG;NA
+Zero adjusted Sichel;dZASICHEL;Zero adjusted Sichel - dZASICHEL;4
+Zero adjusted Zipf;dZAZIPF;Zero adjusted Zipf - dZAZIPF;2
+Zero inflated beta binomial;dZIBB;Zero inflated beta binomial - dZIBB;NA
+Zero inflated binomial;dZIBI;Zero inflated binomial - dZIBI;2
+Zero inflated beta neg. bin.;dZIBNB;Zero inflated beta neg. bin. - dZIBNB;4
+Zero inflated neg. bin. family;dZINBF;Zero inflated neg. bin. family - dZINBF;NA
+Zero inflated neg. bin.;dZINBI;Zero inflated neg. bin. - dZINBI;3
+Zero inflated poisson;dZIP;Zero inflated poisson - dZIP;2
+Zero inf. poiss.(mu as mean);dZIP2;Zero inf. poiss.(mu as mean) - dZIP2;2
+Zipf;dZIPF;Zipf - dZIPF;1
+Zero inflated PIG;dZIPIG;Zero inflated PIG - dZIPIG;3
+Zero inflated Sichel;dZISICHEL;Zero inflated Sichel - dZISICHEL;4
+;Family.d;Family.d;NA
+;fittedMN;fittedMN;NA
+;gamlss.family.default;gamlss.family.default;NA
+;gen.hazard;gen.hazard;NA
+;hazardFun;hazardFun;NA

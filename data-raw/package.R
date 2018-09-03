@@ -15,6 +15,7 @@ shinytest::installDependencies()
 
 
 devtools::document()
+testthat::test_dir("tests/testthat")
 devtools::check()
 devtools::install_github("LarsGerdes/shinydistributions")
 shinydistributions::launch()

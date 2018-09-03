@@ -1,0 +1,84 @@
+Distributions;R_names; density_names ;No_of_parameters_only;No_of_parameters
+Beta;BE;dBE;2;2
+Beta Binomial;BB;dBB;2;2
+Beta negative binomial;BNB;dBNB;3;3
+Beta one inflated;BEOI;dBEOI;3;3
+Beta zero inflated;BEZI;dBEZI;3;3
+Beta inflated;BEINF;dBEINF;4;4
+Binomial;BI;dBI;1;1
+Box-Cox Cole and Green;BCCG;dBCCG;3;3
+Box-Cox Power Exponential;BCPE;dBCPE;4;4
+Box-Cox-t;BCT;dBCT;4;4
+Delaport;DEL;dDEL;3;3
+Double Poisson;DPO;dDPO;2;2
+Double binomial;DBI;dDBI;2;2
+Exponential;EXP;dEXP;1;1
+Exponential Gaussian;exGAUS;dexGAUS;3;3
+Exponential generalized Beta type 2;EGB2;dEGB2;4;4
+Gamma;GA;dGA;2;2
+Generalized Beta type 1;GB1;dGB1;4;4
+Generalized Beta type 2;GB2;dGB2;4;4
+Generalized Gamma;GG;dGG;3;3
+Generalized Inverse Gaussian;GIG;dGIG;3;3
+Generalized t;GT;dGT;4;4
+Geometric;GEOM;dGEOM;1;1
+Geometric (original);GEOMo;dGEOMo;1;1
+Gumbel;GU;dGU;2;2
+Inverse Gamma;IGAMMA;dIGAMMA;2;2
+Inverse Gaussian;IG;dIG;2;2
+Johnson's SU;JSU;dJSU;4;4
+Logarithmic;LG;dLG;1;1
+Logistic;LO;dLO;2;2
+log-Normal;LOGNO;dLOGNO;2;2
+log-Normal (Box-Cox);LNO;dLNO;3;3 (1 fixed)
+Negative Binomial type I;NBI;dNBI;2;2
+Negative Binomial type II;NBII;dNBII;2;2
+Negative Binomial family;NBF;dNBF;3;3
+Normal Exponential t;NET;dNET;4;4 (2 fixed)
+Normal;NO;dNO;2;2
+Normal Family;NOF;dNOF;3;3 (1 fixed)
+Normal Linear Quadratic;LQNO;dLQNO;2;2
+Pareto type 2;PARETO2;dPARETO2;2;2
+Pareto type 2 original;PARETO2o;dPARETO2o;2;2
+Power Exponential;PE;dPE;3;3
+Power Exponential type 2;PE2;dPE2;3;3
+Poison;PO;dPO;1;1
+Poisson inverse Gaussian;PIG;dPIG;2;2
+Reverse generalized extreme;RGE;dRGE;3;3
+Reverse Gumbel;RG;dRG;2;2
+Skew Power Exponential type 1;SEP1;dSEP1;4;4
+Skew Power Exponential type 2;SEP2;dSEP2;4;4
+Skew Power Exponential type 3;SEP3;dSEP3;4;4
+Skew Power Exponential type 4;SEP4;dSEP4;4;4
+Shash;SHASH;dSHASH;4;4
+Shash original;SHASHo;dSHASHo;4;4
+Shash original 2;SHASHo2;dSHASHo2;4;4
+Sichel (original);SI;dSI;3;3
+Sichel (mu as the maen);SICHEL;dSICHEL;3;3
+Skew t type 1;ST1;dST1;3;3
+Skew t type 2;ST2;dST2;3;3
+Skew t type 3;ST3;dST3;3;3
+Skew t type 4;ST4;dST4;3;3
+Skew t type 5;ST5;dST5;3;3
+t-distribution;TF;dTF;3;3
+Waring;WARING;dWARING;1;1
+Weibull;WEI;dWEI;2;2
+Weibull(PH parameterization);WEI2;dWEI2;2;2
+Weibull (mu as mean);WEI3;dWEI3;2;2
+Yule;YULE;dYULE;1;1
+Zero adjusted binomial;ZABI;dZABI;2;2
+Zero adjusted beta neg. bin.;ZABNB;dZABNB;4;4
+Zero adjusted IG;ZAIG;dZAIG;2;2
+Zero adjusted logarithmic;ZALG;dZALG;2;2
+Zero adjusted neg. bin.;ZANBI;dZANBI;3;3
+Zero adjusted poisson;ZAP;dZAP;2;2
+Zero adjusted Sichel;ZASICHEL;dZASICHEL;4;4
+Zero adjusted Zipf;ZAZIPF;dZAZIPF;2;2
+Zero inflated binomial;ZIBI;dZIBI;2;2
+Zero inflated beta neg. bin.;ZIBNB;dZIBNB;4;4
+Zero inflated neg. bin.;ZINBI;dZINBI;3;3
+Zero inflated poisson;ZIP;dZIP;2;2
+Zero inf. poiss.(mu as mean);ZIP2;dZIP2;2;2
+Zero inflated PIG;ZIPIG;dZIPIG;3;3
+Zero inflated Sichel;ZISICHEL;dZISICHEL;4;4
+Zipf;ZIPF;dZIPF;1;1

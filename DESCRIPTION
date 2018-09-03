@@ -1,7 +1,7 @@
 Package: shinydistributions
 Type: Package
 Title: Fit Distributions to Your Data
-Version: 0.0.0.9001
+Version: 1.0.0
 Authors@R: c(
     person("Lars", "Gerdes", email = "l.gerdes@stud.uni-goettingen.de", 
            role = c("aut", "cre")), 
@@ -22,5 +22,4 @@ Depends: R (>= 2.10)
 BugReports: https://github.com/LarsGerdes/shinydistributions/issues
 RoxygenNote: 6.1.0
 Suggests: 
-    shinytest,
     testthat

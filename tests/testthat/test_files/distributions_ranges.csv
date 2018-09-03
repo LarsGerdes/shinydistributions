@@ -1,0 +1,110 @@
+"distribution";"density_fun";"dist_density";"no_of_parameters";"default_location";"default_scale";"default_skewness";"default_kurtosis";"default_binomial_denominator";"discrete_flag";"dist_type";"location_lower_condition";"location_upper_condition";"scale_lower_condition";"scale_upper_condition";"skewness_lower_condition";"skewness_upper_condition";"kurtosis_lower_condition";"kurtosis_upper_condition";"x_lower_condition";"x_upper_condition";"fun_call";"location_lower_bound";"location_upper_bound";"scale_lower_bound";"scale_upper_bound";"skewness_lower_bound";"skewness_upper_bound";"kurtosis_lower_bound";"kurtosis_upper_bound";"x_lower_bound";"x_upper_bound"
+"Beta Binomial";"dBB";"Beta Binomial - dBB";2;0.5;1;NA;NA;10;1;"discrete";"<0";">1";"<=0";NA;NA;NA;NA;NA;"<0";NA;"dBI";0;1;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Box-Cox Cole and Green";"dBCCG";"Box-Cox Cole and Green - dBCCG";3;1;0.1;1;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Box-Cox Cole and Green";"dBCCGo";"Box-Cox Cole and Green - dBCCGo";3;1;0.1;1;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Box-Cox Power Exponential";"dBCPE";"Box-Cox Power Exponential - dBCPE";4;5;0.1;1;2;NA;0;"continuous";"<0";NA;"<0";NA;NA;NA;"<0";NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
+"Box-Cox Power Exponential";"dBCPEo";"Box-Cox Power Exponential - dBCPEo";4;5;0.1;1;2;NA;0;"continuous";"<0";NA;"<0";NA;NA;NA;"<0";NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
+"Box-Cox-t";"dBCT";"Box-Cox-t - dBCT";4;5;0.1;1;2;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;"<=0";NA;"<0";NA;"dBCCG";1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
+"Box-Cox-t";"dBCTo";"Box-Cox-t - dBCTo";4;5;0.1;1;2;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;"<=0";NA;"<0";NA;"dBCCG";1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
+"Beta";"dBE";"Beta - dBE";2;0.5;0.2;NA;NA;NA;0;"continuous";"<=0";">=1";"<=0";">=1";NA;NA;NA;NA;"<=0";">=1";NA;1e-10;0.9999999;1e-10;0.9999999;NA;NA;NA;NA;"1e-10";0.9999999
+"Beta inflated";"dBEINF";"Beta inflated - dBEINF";4;0.5;0.1;0.1;0.1;NA;2;"mixed";"<=0";">=1";"<=0";">=1";"<=0";NA;"<=0";NA;"<0";">1";NA;1e-10;0.9999999;1e-10;0.9999999;1e-10;NA;"1e-10";NA;"0";1
+"Beta inflated";"dBEINF0";"Beta inflated - dBEINF0";3;0.5;0.1;0.1;NA;NA;2;"mixed";"<=0";">=1";"<=0";">=1";"<=0";NA;NA;NA;"<0";">1";NA;1e-10;0.9999999;1e-10;0.9999999;1e-10;NA;NA;NA;"0";1
+"Beta inflated";"dBEINF1";"Beta inflated - dBEINF1";3;0.5;0.1;0.1;NA;NA;2;"mixed";"<=0";">=1";"<=0";">=1";"<=0";NA;NA;NA;"<=0";">1";NA;1e-10;0.9999999;1e-10;0.9999999;1e-10;NA;NA;NA;"1e-10";1
+"Beta";"dBEo";"Beta - dBEo";2;0.5;0.2;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<=0";">=1";NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"1e-10";0.9999999
+"Beta one inflated";"dBEOI";"Beta one inflated - dBEOI";3;0.5;1;0.1;NA;NA;2;"mixed";"<=0";">=1";"<0";NA;"<=0";">=1";NA;NA;"<=0";">1";NA;1e-10;0.9999999;0;NA;1e-10;0.9999999;NA;NA;"1e-10";1
+"Beta zero inflated";"dBEZI";"Beta zero inflated - dBEZI";3;0.5;1;0.1;NA;NA;2;"mixed";"<=0";">=1";"<0";NA;"<=0";">=1";NA;NA;"<0";">=1";NA;1e-10;0.9999999;0;NA;1e-10;0.9999999;NA;NA;"0";0.9999999
+"Binomial";"dBI";"Binomial - dBI";1;0.5;NA;NA;NA;1;1;"discrete";"<0";">1";NA;NA;NA;NA;NA;NA;"<0";NA;NA;0;1;NA;NA;NA;NA;NA;NA;"0";NA
+"Beta negative binomial";"dBNB";"Beta negative binomial - dBNB";3;1;1;1;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;1e-10;NA;NA;NA;"0";NA
+"Double binomial";"dDBI";"Double binomial - dDBI";2;0.5;1;NA;NA;2;1;"discrete";"<0";">1";"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;0;1;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Delaport";"dDEL";"Delaport - dDEL";3;1;1;0.5;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Double Poisson";"dDPO";"Double Poisson - dDPO";2;1;1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Exponential generalized Beta type 2";"dEGB2";"Exponential generalized Beta type 2 - dEGB2";4;0;1;1;0.5;NA;0;"continuous";NA;NA;NA;NA;"<0";NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;0;NA;"0";NA;NA;NA
+"Exponential Gaussian";"dexGAUS";"Exponential Gaussian - dexGAUS";3;5;1;1;NA;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA
+"Exponential";"dEXP";"Exponential - dEXP";1;1;NA;NA;NA;NA;0;"continuous";"<=0";NA;NA;NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA;"0";NA
+"Gamma";"dGA";"Gamma - dGA";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Generalized Beta type 1";"dGB1";"Generalized Beta type 1 - dGB1";4;0.5;0.4;1;1;NA;0;"continuous";"<=0";">=1";"<=0";">=1";"<0";NA;"<0";NA;"<=0";">=1";NA;1e-10;0.9999999;1e-10;0.9999999;0;NA;"0";NA;"1e-10";0.9999999
+"Generalized Beta type 2";"dGB2";"Generalized Beta type 2 - dGB2";4;1;1;1;0.5;NA;0;"continuous";"<0";NA;NA;NA;"<0";NA;"<0";NA;NA;NA;NA;0;NA;NA;NA;0;NA;"0";NA;NA;NA
+"Geometric";"dGEOM";"Geometric - dGEOM";1;2;NA;NA;NA;NA;1;"discrete";"<0";NA;NA;NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;NA;NA;NA;NA;NA;NA;"0";NA
+"Geometric (original)";"dGEOMo";"Geometric (original) - dGEOMo";1;0.5;NA;NA;NA;NA;1;"discrete";"<0";">1";NA;NA;NA;NA;NA;NA;"<0";NA;NA;0;1;NA;NA;NA;NA;NA;NA;"0";NA
+"Generalized Gamma";"dGG";"Generalized Gamma - dGG";3;1;0.5;1;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;"dGA";1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Generalized Inverse Gaussian";"dGIG";"Generalized Inverse Gaussian - dGIG";3;1;1;1;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Generalised Pareto";"dGP";"Generalised Pareto - dGP";2;1;1;NA;NA;NA;0;"continuous";"<0";NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;0;NA;0;NA;NA;NA;NA;NA;NA;NA
+"Generalised Pareto";"dGPO";"Generalised Pareto - dGPO";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Generalized t";"dGT";"Generalized t - dGT";4;0;1;3;1.5;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Gumbel";"dGU";"Gumbel - dGU";2;0;1;NA;NA;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;0;NA;NA;NA;NA;NA;NA;NA
+"Inverse Gaussian";"dIG";"Inverse Gaussian - dIG";2;1;1;NA;NA;NA;0;"continuous";"<0";NA;"<0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;0;NA;NA;NA;NA;NA;"0";NA
+"Inverse Gamma";"dIGAMMA";"Inverse Gamma - dIGAMMA";2;1;0.5;NA;NA;NA;0;"continuous";"<0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Johnson's SU";"dJSU";"Johnson's SU - dJSU";4;0;1;1;0.5;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Johnson's SU";"dJSUo";"Johnson's SU - dJSUo";4;0;1;0;1;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Logarithmic";"dLG";"Logarithmic - dLG";1;0.5;NA;NA;NA;NA;1;"discrete";"<=0";">=1";NA;NA;NA;NA;NA;NA;"<=0";NA;NA;1e-10;0.9999999;NA;NA;NA;NA;NA;NA;"1e-10";NA
+"log-Normal (Box-Cox)";"dLNO";"log-Normal (Box-Cox) - dLNO";3;1;0.1;0;NA;NA;0;"continuous";"0";NA;"<=0";NA;"0";"0";NA;NA;"<0";NA;NA;0;NA;1e-10;NA;0;0;NA;NA;"0";NA
+"Logistic";"dLO";"Logistic - dLO";2;0;1;NA;NA;NA;0;"continuous";NA;NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Logit Normal";"dLOGITNO";"Logit Normal - dLOGITNO";2;0.5;1;NA;NA;NA;0;"continuous";"<0";">1";"<=0";NA;NA;NA;NA;NA;NA;NA;NA;0;1;1e-10;NA;NA;NA;NA;NA;NA;NA
+"log-Normal";"dLOGNO";"log-Normal - dLOGNO";2;0;1;NA;NA;NA;0;"continuous";NA;NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"log-Normal";"dLOGNO2";"log-Normal - dLOGNO2";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Normal Linear Quadratic";"dLQNO";"Normal Linear Quadratic - dLQNO";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Multinomial";"dMN3";"Multinomial - dMN3";2;1;1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<1";">3";NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"1";3
+"Multinomial";"dMN4";"Multinomial - dMN4";3;1;1;1;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;"<1";">5";NA;1e-10;NA;1e-10;NA;1e-10;NA;NA;NA;"1";5
+"Multinomial";"dMN5";"Multinomial - dMN5";4;1;1;1;1;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";NA;"<=0";NA;"<1";">5";NA;1e-10;NA;1e-10;NA;1e-10;NA;"1e-10";NA;"1";5
+"Negative Binomial family";"dNBF";"Negative Binomial family - dNBF";3;1;1;2;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Negative Binomial type I";"dNBI";"Negative Binomial type I - dNBI";2;1;1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Negative Binomial type II";"dNBII";"Negative Binomial type II - dNBII";2;1;1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Normal Exponential t";"dNET";"Normal Exponential t - dNET";4;0;1;1.5;2;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"tau<nu";NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;"Skewness";NA;NA;NA
+"Normal (mean, sd)";"dNO";"Normal (mean, sd) - dNO";2;0;1;NA;NA;NA;0;"continuous";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA
+"Normal (mean, var)";"dNO2";"Normal (mean, var) - dNO2";2;0;1;NA;NA;NA;0;"continuous";NA;NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Normal Family";"dNOF";"Normal Family - dNOF";3;0;1;0;NA;NA;0;"continuous";NA;NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Pareto type 2";"dPARETO2";"Pareto type 2 - dPARETO2";2;1;0.5;NA;NA;NA;0;"continuous";"<0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Pareto type 2 original";"dPARETO2o";"Pareto type 2 original - dPARETO2o";2;1;0.5;NA;NA;NA;0;"continuous";"<0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Power Exponential";"dPE";"Power Exponential - dPE";3;0;1;2;NA;NA;0;"continuous";NA;NA;"<0";NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;0;NA;0;NA;NA;NA;NA;NA
+"Power Exponential type 2";"dPE2";"Power Exponential type 2 - dPE2";3;0;1;2;NA;NA;0;"continuous";NA;NA;"<0";NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;0;NA;0;NA;NA;NA;NA;NA
+"Poisson inverse Gaussian";"dPIG";"Poisson inverse Gaussian - dPIG";2;1;1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Poison";"dPO";"Poison - dPO";1;1;NA;NA;NA;NA;1;"discrete";"<=0";NA;NA;NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA;"0";NA
+"Reverse Gumbel";"dRG";"Reverse Gumbel - dRG";2;0;1;NA;NA;NA;0;"continuous";NA;NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
+"Reverse generalized extreme";"dRGE";"Reverse generalized extreme - dRGE";3;1;0.1;1;NA;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;NA;NA;"mu-(sigma/nu)";NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;"Location - (Scale / Skewness)";NA
+"Skew Power Exponential";"dSEP";"Skew Power Exponential - dSEP";4;0;1;0;2;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Skew Power Exponential type 1";"dSEP1";"Skew Power Exponential type 1 - dSEP1";4;0;1;0;2;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Skew Power Exponential type 2";"dSEP2";"Skew Power Exponential type 2 - dSEP2";4;0;1;0;2;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Skew Power Exponential type 3";"dSEP3";"Skew Power Exponential type 3 - dSEP3";4;0;1;2;2;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Skew Power Exponential type 4";"dSEP4";"Skew Power Exponential type 4 - dSEP4";4;0;1;2;2;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Shash";"dSHASH";"Shash - dSHASH";4;0;1;0.5;0.5;NA;0;"continuous";NA;NA;"<0";NA;"<0";NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;0;NA;"0";NA;NA;NA
+"Shash original";"dSHASHo";"Shash original - dSHASHo";4;0;1;0;1;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Shash original 2";"dSHASHo2";"Shash original 2 - dSHASHo2";4;0;1;0;1;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Sichel (original)";"dSI";"Sichel (original) - dSI";3;0.5;0.02;-0.5;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Sichel (mu as the mean)";"dSICHEL";"Sichel (mu as the mean) - dSICHEL";3;1;1;-0.5;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;"dNBI";1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Skew Normal Type 1";"dSN1";"Skew Normal Type 1 - dSN1";3;0;1;0;NA;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;0;NA;NA;NA;NA;NA;NA;NA
+"Skew Normal Type 2";"dSN2";"Skew Normal Type 2 - dSN2";3;0;1;2;NA;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA
+"Skew t";"dSST";"Skew t - dSST";4;0;1;0.8;7;NA;0;"continuous";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;"dST3";NA;NA;NA;NA;NA;NA;NA;NA;NA;NA
+"Skew t type 1";"dST1";"Skew t type 1 - dST1";4;0;1;0;2;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;"dNO";NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Skew t type 2";"dST2";"Skew t type 2 - dST2";4;0;1;0;2;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;"dNO";NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"Skew t type 3";"dST3";"Skew t type 3 - dST3";4;0;1;1;10;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;"dNO";NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Skew t";"dST3C";"Skew t - dST3C";4;0;1;1;10;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Skew t type 4";"dST4";"Skew t type 4 - dST4";4;0;1;1;10;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;"<=0";NA;NA;NA;"dNO";NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
+"Skew t type 5";"dST5";"Skew t type 5 - dST5";4;0;1;0;1;NA;0;"continuous";NA;NA;"<0";NA;NA;NA;"<0";NA;NA;NA;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
+"t-distribution";"dTF";"t-distribution - dTF";3;0;1;10;NA;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;"dNO";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA
+"t-distribution";"dTF2";"t-distribution - dTF2";3;0;1;10;NA;NA;0;"continuous";NA;NA;"<=0";NA;"<=0";NA;NA;NA;NA;NA;"dNO";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA
+"Waring";"dWARING";"Waring - dWARING";2;2;2;NA;NA;NA;1;"discrete";"<0";NA;"<0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;0;NA;NA;NA;NA;NA;"0";NA
+"Weibull";"dWEI";"Weibull - dWEI";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Weibull(PH parameterization)";"dWEI2";"Weibull(PH parameterization) - dWEI2";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Weibull (mu as mean)";"dWEI3";"Weibull (mu as mean) - dWEI3";2;1;1;NA;NA;NA;0;"continuous";"<=0";NA;"<=0";NA;NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
+"Yule";"dYULE";"Yule - dYULE";1;2;NA;NA;NA;NA;1;"discrete";"<0";NA;NA;NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;NA;NA;NA;NA;NA;NA;"0";NA
+"Zero adjusted beta binomial";"dZABB";"Zero adjusted beta binomial - dZABB";3;0.5;0.1;0.1;NA;1;1;"discrete";"<=0";">=1";"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dBB";1e-10;0.9999999;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero adjusted binomial";"dZABI";"Zero adjusted binomial - dZABI";2;0.5;0.1;NA;NA;1;1;"discrete";"<=0";">=1";"<=0";">=1";NA;NA;NA;NA;"<0";NA;"dBI";1e-10;0.9999999;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero adjusted beta neg. bin.";"dZABNB";"Zero adjusted beta neg. bin. - dZABNB";4;1;1;1;0.1;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;"<=0";">=1";"<0";NA;"dBNB";1e-10;NA;1e-10;NA;NA;NA;"1e-10";0.9999999;"0";NA
+"Zero adjusted Gamma";"dZAGA";"Zero adjusted Gamma - dZAGA";3;1;1;0.1;NA;NA;2;"mixed";"<0";NA;"<0";NA;"<0";">1";NA;NA;"<0";NA;NA;0;NA;0;NA;0;1;NA;NA;"0";NA
+"Zero adjusted IG";"dZAIG";"Zero adjusted IG - dZAIG";3;1;1;0.1;NA;NA;2;"mixed";"<0";NA;"<0";NA;NA;NA;NA;NA;"<0";NA;NA;0;NA;0;NA;NA;NA;NA;NA;"0";NA
+"Zero adjusted logarithmic";"dZALG";"Zero adjusted logarithmic - dZALG";2;0.5;0.1;NA;NA;NA;1;"discrete";"<=0";">=1";"<=0";">=1";NA;NA;NA;NA;"<0";NA;"dLG";1e-10;0.9999999;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero adjusted neg. bin.";"dZANBI";"Zero adjusted neg. bin. - dZANBI";3;1;1;0.3;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dNBI";1e-10;NA;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero adjusted poisson";"dZAP";"Zero adjusted poisson - dZAP";2;5;0.1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";">=1";NA;NA;NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero adjusted PIG";"dZAPIG";"Zero adjusted PIG - dZAPIG";3;1;1;0.3;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dPIG";1e-10;NA;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero adjusted Sichel";"dZASICHEL";"Zero adjusted Sichel - dZASICHEL";4;1;1;-0.5;0.1;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;"<=0";">=1";"<0";NA;"dSICHEL";1e-10;NA;1e-10;NA;NA;NA;"1e-10";0.9999999;"0";NA
+"Zero adjusted Zipf";"dZAZIPF";"Zero adjusted Zipf - dZAZIPF";2;0.5;0.1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";">=1";NA;NA;NA;NA;"<0";NA;"dZIPF";1e-10;NA;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero inflated beta binomial";"dZIBB";"Zero inflated beta binomial - dZIBB";3;0.5;0.5;0.1;NA;1;1;"discrete";"<=0";">=1";"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dBB";1e-10;0.9999999;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero inflated binomial";"dZIBI";"Zero inflated binomial - dZIBI";2;0.5;0.1;NA;NA;1;1;"discrete";"<=0";">=1";"<=0";">=1";NA;NA;NA;NA;"<0";NA;"dBI";1e-10;0.9999999;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero inflated beta neg. bin.";"dZIBNB";"Zero inflated beta neg. bin. - dZIBNB";4;1;1;1;0.1;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;"<=0";">=1";"<0";NA;"dBNB";1e-10;NA;1e-10;NA;NA;NA;"1e-10";0.9999999;"0";NA
+"Zero inflated neg. bin. family";"dZINBF";"Zero inflated neg. bin. family - dZINBF";4;1;1;2;0.1;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;"<=0";">=1";"<0";NA;"dNBF";1e-10;NA;1e-10;NA;NA;NA;"1e-10";0.9999999;"0";NA
+"Zero inflated neg. bin.";"dZINBI";"Zero inflated neg. bin. - dZINBI";3;1;1;0.3;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dNBI";1e-10;NA;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero inflated poisson";"dZIP";"Zero inflated poisson - dZIP";2;5;0.1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";">=1";NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zero inf. poiss.(mu as mean)";"dZIP2";"Zero inf. poiss.(mu as mean) - dZIP2";2;5;0.1;NA;NA;NA;1;"discrete";"<=0";NA;"<=0";">=1";NA;NA;NA;NA;"<0";NA;NA;1e-10;NA;1e-10;0.9999999;NA;NA;NA;NA;"0";NA
+"Zipf";"dZIPF";"Zipf - dZIPF";1;1;NA;NA;NA;NA;1;"discrete";"<=0";NA;NA;NA;NA;NA;NA;NA;"<1";NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA;"1";NA
+"Zero inflated PIG";"dZIPIG";"Zero inflated PIG - dZIPIG";3;1;1;0.3;NA;NA;1;"discrete";"<=0";NA;"<=0";NA;"<=0";">=1";NA;NA;"<0";NA;"dPO";1e-10;NA;1e-10;NA;1e-10;0.9999999;NA;NA;"0";NA
+"Zero inflated Sichel";"dZISICHEL";"Zero inflated Sichel - dZISICHEL";4;1;1;-0.5;0.1;NA;1;"discrete";"<=0";NA;"<=0";NA;NA;NA;"<=0";">=1";"<0";NA;"dSICHEL";1e-10;NA;1e-10;NA;NA;NA;"1e-10";0.9999999;"0";NA

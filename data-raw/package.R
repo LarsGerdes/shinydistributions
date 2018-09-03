@@ -9,6 +9,7 @@ devtools::has_devel()
 usethis::use_testthat()
 # for unit tests with shiny
 install.packages("shinytest")
+devtools::install_github("rstudio/shinytest")
 shinytest::dependenciesInstalled()
 shinytest::installDependencies()
 

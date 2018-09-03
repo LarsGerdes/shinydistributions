@@ -1,4 +1,4 @@
-app <- ShinyDriver$new("inst/app")
+app <- shinytest::ShinyDriver$new("inst/app")
 app$snapshotInit("sepal_width_bcpe")
 
 app$snapshot()

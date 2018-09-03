@@ -2,8 +2,8 @@
 "Beta Binomial";"dBB";"discrete";2;0.5;1;NA;NA;10;0;1;1e-10;NA;NA;NA;NA;NA;"0";NA
 "Box-Cox Cole and Green";"dBCCG";"continuous";3;1;0.1;1;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
 "Box-Cox Cole and Green";"dBCCGo";"continuous";3;1;0.1;1;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
-"Box-Cox Power Exponential";"dBCPE";"continuous";4;5;0.1;1;2;NA;0;NA;0;NA;NA;NA;"0";NA;"0";NA
-"Box-Cox Power Exponential";"dBCPEo";"continuous";4;5;0.1;1;2;NA;0;NA;0;NA;NA;NA;"0";NA;"0";NA
+"Box-Cox Power Exponential";"dBCPE";"continuous";4;5;0.1;1;2;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
+"Box-Cox Power Exponential";"dBCPEo";"continuous";4;5;0.1;1;2;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
 "Box-Cox-t";"dBCT";"continuous";4;5;0.1;1;2;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
 "Box-Cox-t";"dBCTo";"continuous";4;5;0.1;1;2;NA;1e-10;NA;1e-10;NA;NA;NA;"1e-10";NA;"0";NA
 "Beta";"dBE";"continuous";2;0.5;0.2;NA;NA;NA;1e-10;0.9999999;1e-10;0.9999999;NA;NA;NA;NA;"1e-10";0.9999999

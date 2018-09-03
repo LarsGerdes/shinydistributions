@@ -1,5 +1,6 @@
 testthat::context(desc = "Sepal.Width Box Cox Power Exponential")
 
+# replicating the ml estimation
 mle <- function(data, input) {
   distributions <- read.csv(file = "test_files/distributions_ranges.csv",
                             header = TRUE, sep = ';', stringsAsFactors = FALSE)

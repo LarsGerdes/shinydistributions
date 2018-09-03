@@ -37,7 +37,7 @@
 "Johnson's SU";"dJSU";"continuous";4;0;1;1;0.5;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
 "Johnson's SU";"dJSUo";"continuous";4;0;1;0;1;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
 "Logarithmic";"dLG";"discrete";1;0.5;NA;NA;NA;NA;1e-10;0.9999999;NA;NA;NA;NA;NA;NA;"1e-10";NA
-"log-Normal (Box-Cox)";"dLNO";"continuous";3;1;0.1;0;NA;NA;0;NA;1e-10;NA;0;0;NA;NA;"0";NA
+"log-Normal (Box-Cox)";"dLNO";"continuous";3;1;0.1;0;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
 "Logistic";"dLO";"continuous";2;0;1;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
 "Logit Normal";"dLOGITNO";"continuous";2;0.5;1;NA;NA;NA;0;1;1e-10;NA;NA;NA;NA;NA;NA;NA
 "log-Normal";"dLOGNO";"continuous";2;0;1;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
@@ -50,7 +50,7 @@
 "Negative Binomial type I";"dNBI";"discrete";2;1;1;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
 "Negative Binomial type II";"dNBII";"discrete";2;1;1;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
 "Normal Exponential t";"dNET";"continuous";4;0;1;1.5;2;NA;NA;NA;1e-10;NA;1e-10;NA;"Skewness";NA;NA;NA
-"Normal (mean, sd)";"dNO";"continuous";2;0;1;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA
+"Normal (mean, sd)";"dNO";"continuous";2;0;1;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
 "Normal (mean, var)";"dNO2";"continuous";2;0;1;NA;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
 "Normal Family";"dNOF";"continuous";3;0;1;0;NA;NA;NA;NA;1e-10;NA;NA;NA;NA;NA;NA;NA
 "Pareto type 2";"dPARETO2";"continuous";2;1;0.5;NA;NA;NA;0;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
@@ -73,7 +73,7 @@
 "Sichel (mu as the mean)";"dSICHEL";"discrete";3;1;1;-0.5;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA;"0";NA
 "Skew Normal Type 1";"dSN1";"continuous";3;0;1;0;NA;NA;NA;NA;0;NA;NA;NA;NA;NA;NA;NA
 "Skew Normal Type 2";"dSN2";"continuous";3;0;1;2;NA;NA;NA;NA;1e-10;NA;1e-10;NA;NA;NA;NA;NA
-"Skew t";"dSST";"continuous";4;0;1;0.8;7;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA
+"Skew t";"dSST";"continuous";4;0;1;0.8;7;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA
 "Skew t type 1";"dST1";"continuous";4;0;1;0;2;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
 "Skew t type 2";"dST2";"continuous";4;0;1;0;2;NA;NA;NA;0;NA;NA;NA;"0";NA;NA;NA
 "Skew t type 3";"dST3";"continuous";4;0;1;1;10;NA;NA;NA;1e-10;NA;1e-10;NA;"1e-10";NA;NA;NA

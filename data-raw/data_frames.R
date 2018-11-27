@@ -6,7 +6,7 @@ distributions <- read.csv(file = "data-raw/distributions_ranges.csv",
 distributions <- distributions[, - c(12:22)]
 # improving bounds
 distributions[which(distributions$scale_lower_bound == 1e-10),
-              "scale_lower_bound"] <- 1e-6
+              "scale_lower_bound"] <- 1e-2
 distributions[which(distributions$scale_lower_bound == 0),
               "scale_lower_bound"] <- 1e-2
 distributions[distributions$dist_density == "Logit Normal - dLOGITNO",

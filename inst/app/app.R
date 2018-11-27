@@ -105,6 +105,12 @@ ui <- fluidPage(
             choices = c(None = "", "Double Quote" = '"', "Single Quote" = "'"),
             selected = '"'
           ),
+          radioButtons(
+            inputId = "dec",
+            label = "Decimal",
+            choices = c(Point = ".", Komma = ","),
+            selected = "."
+          ),
           # Horizontal line
           tags$hr(),
           #Input: Select data table or summary of data set
@@ -175,7 +181,7 @@ server <- function(input, output, session) {
       )
     } else if (values$upload_state == 'uploaded') {
       read.csv(file = input$dataset$datapath, header = input$header,
-               sep = input$sep, quote = input$quote)
+               sep = input$sep, quote = input$quote, dec = input$dec)
       # Set maximum upload size back to the initial value after upload
       #on.exit(expr = options(old))
     } else if (values$upload_state == 'reset') {

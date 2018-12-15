@@ -17,9 +17,9 @@ shinytest::installDependencies()
 devtools::document()
 testthat::test_dir("tests/testthat")
 devtools::check()
-devtools::install_github("LarsGerdes/shinydistributions")
-shinydistributions::launch()
 
-# Uninstall - for testing, or if there are problems
+# Reinstall
 remove.packages("shinydistributions")
 .rs.restartR()
+devtools::install_github("LarsGerdes/shinydistributions")
+shinydistributions::launch()

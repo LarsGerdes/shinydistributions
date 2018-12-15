@@ -1,3 +1,4 @@
+
 # read csv containing full distribution names and default parameters for 109
 # density functions
 distributions <- read.csv(file = "data-raw/distributions_ranges.csv",
@@ -6,13 +7,23 @@ distributions <- read.csv(file = "data-raw/distributions_ranges.csv",
 distributions <- distributions[, - c(12:22)]
 # improving bounds
 distributions[which(distributions$scale_lower_bound == 1e-10),
-              "scale_lower_bound"] <- 1e-1
+              "scale_lower_bound"] <- 0.1
 distributions[which(distributions$scale_lower_bound == 0),
-              "scale_lower_bound"] <- 1e-1
+              "scale_lower_bound"] <- 0.1
 distributions[distributions$dist_density == "Logit Normal - dLOGITNO",
               "x_upper_bound"] <- 1
-
-
+distributions[distributions$dist_density == "log-Normal (Box-Cox) - dLNO",
+              "skewness_upper_bound"] <- NA
+distributions[distributions$dist_density == "Normal Family - dNOF",
+              "location_lower_bound"] <- 0.1
+distributions[distributions$dist_density == "Skew Normal Type 1 - dSN1",
+              "location_lower_bound"] <- 0.1
+distributions[distributions$dist_density == "Johnson's SU - dJSU",
+              "location_lower_bound"] <- 0.1
+distributions[distributions$dist_density == "Normal Exponential t - dNET",
+              "location_lower_bound"] <- 0.1
+distributions[distributions$dist_density == "Skew Power Exponential - dSEP",
+              "location_lower_bound"] <- 0.1
 
 
 # read csv containing relevant columns for tab "Properties of Distributions"

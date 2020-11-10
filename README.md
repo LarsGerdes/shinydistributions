@@ -15,4 +15,4 @@ The "Data Upload" window can be used to upload data. Alternatively to your own d
 
 The "Properties of Distribution" window shows properties of the available distributions. The source of those and of the used density functions is the gamlss.dist package. This includes the errors of the package.  
 
-(screenshot.png)
+(https://github.com/LarsGerdes/shinydistributions/blob/master/screenshot.png)

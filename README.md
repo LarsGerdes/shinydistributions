@@ -8,7 +8,7 @@ A shiny app to show which distribution fits best.
 This only works with R versions older than 4.0.0.
 
 ## Web Application
-(http://gerdes.shinyapps.io/server) (App is not optimized for server version)
+http://gerdes.shinyapps.io/server (App is not optimized for server version)
 
 ## Usage
 In the "Plot Distribution" window you can plot the density function of any distribution and adjust their parameters.   
